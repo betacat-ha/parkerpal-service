@@ -18,7 +18,7 @@
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <wechatpay>0.4.0</wechatpay>
+    <wechatpay>0.4.9</wechatpay>
   </properties>
 
   <dependencies>

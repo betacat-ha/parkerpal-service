@@ -61,6 +61,12 @@
                 <artifactId>core</artifactId>
                 <version>${revision}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.32</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
