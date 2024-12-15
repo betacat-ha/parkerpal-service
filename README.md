@@ -1,7 +1,7 @@
 
 # 项目概述
 
-该智慧停车场项目为前后端分离架构，本仓库为后端源码仓库，前端基于Vue3.0版本结合TypeScript，UI框架采用elementPlus，后端使用java进行编写，以Springboot 2.6.0 + mysql 8.0.3 + mybatis plus 3.5.2 + knife4j 3.0.3 + mapstruct 1.3.1.Final 作为核心框架进行开发。
+智泊无忧项目为前后端分离架构，本仓库为后端源码仓库，前端基于Vue3.0版本结合TypeScript，UI框架采用elementPlus，后端使用java进行编写，以Springboot 2.6.0 + mysql 8.0.3 + mybatis plus 3.5.2 + knife4j 3.0.3 + mapstruct 1.3.1.Final 作为核心框架进行开发。
 
 mysql           数据库
 knife4j         作为接口文档

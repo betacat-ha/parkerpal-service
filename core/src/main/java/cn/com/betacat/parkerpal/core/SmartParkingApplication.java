@@ -18,14 +18,14 @@ import java.net.UnknownHostException;
 public class SmartParkingApplication {
 
     public static void main(String[] args) throws UnknownHostException {
-        log.info("\n=============> 开始启动智慧停车服务 <===================");
+        log.info("\n=============> 开始启动智泊无忧服务 <===================");
         ConfigurableApplicationContext context = SpringApplication.run(SmartParkingApplication.class, args);
         Environment env = context.getEnvironment();
         String ip = InetAddress.getLocalHost().getHostAddress();
         String port = env.getProperty("server.port");
         String path = env.getProperty("server.servlet.context-path");
         log.info("\n----------------------------------------------------------------------\n\t" +
-                "==============> 智慧停车服务启动成功 <=================\n\t" +
+                "==============> 智泊无忧服务启动成功 <=================\n\t" +
                 "Access URLs:\n\t" +
                 "Local: \t\thttp://localhost:" + port + path + "/\n\t" +
                 "External: \thttp://" + ip + ":" + port + path + "/\n\t" +
