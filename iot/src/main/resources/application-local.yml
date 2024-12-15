@@ -1,0 +1,30 @@
+#服务端口
+server:
+  port: 37902
+
+spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:3306/smart_parking?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+#    username: root
+#    password: root
+
+# MQTT配置
+mqtt:
+  # 是否开启MQTT，true|开启  false｜关闭
+  enabled: true
+  # 服务地址+端口
+  brokerUrl: tcp://127.0.0.1:1883
+  # 用户名
+  username: ParkerPal
+  # 密码
+  password: 123456
+  # 客户端
+  client:
+    id: ParkerPal-Service
+  # 默认主题
+  topic:
+    default: /parkerpal/#
+    subscribe: /parkerpal
+  # QoS
+  qos: 1

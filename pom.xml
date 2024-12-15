@@ -13,6 +13,7 @@
         <module>common</module>
         <module>wxpay</module>
         <module>core</module>
+        <module>iot</module>
     </modules>
 
     <!--版本管理-->
