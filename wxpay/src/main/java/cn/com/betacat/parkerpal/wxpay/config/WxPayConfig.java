@@ -6,9 +6,10 @@ import cn.com.betacat.parkerpal.common.utils.UploadUtils;
 import cn.com.betacat.parkerpal.wxpay.service.WeChatJsapiPayService;
 import com.wechat.pay.contrib.apache.httpclient.WechatPayHttpClientBuilder;
 import com.wechat.pay.contrib.apache.httpclient.auth.PrivateKeySigner;
-import com.wechat.pay.contrib.apache.httpclient.auth.ScheduledUpdateCertificatesVerifier;
+import com.wechat.pay.contrib.apache.httpclient.auth.Verifier;
 import com.wechat.pay.contrib.apache.httpclient.auth.WechatPay2Credentials;
 import com.wechat.pay.contrib.apache.httpclient.auth.WechatPay2Validator;
+import com.wechat.pay.contrib.apache.httpclient.cert.CertificatesManager;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -65,22 +66,29 @@ public class WxPayConfig {
     /**
      * 获取签名验证器
      *
-     * @return
+     * @return WechatPay2Validator
      */
     @Bean(name = "getVerifier")
-    public ScheduledUpdateCertificatesVerifier getVerifier() {
+    public WechatPay2Validator getVerifier() {
         log.info("获取签名验证器");
         SystemWeChatJsapiPay entity = weChatJsapiPayService.getWeChatJsapiPay();
         if (Objects.isNull(entity)) throw new BizException("微信JSAPI支付配置信息不存在");
         //获取商户私钥
         PrivateKey privateKey = getPrivateKey(entity.getPrivateKeyPath());
-        //私钥签名对象
-        PrivateKeySigner privateKeySigner = new PrivateKeySigner(entity.getMacSerialNo(), privateKey);
-        //身份认证对象
-        WechatPay2Credentials wechatPay2Credentials = new WechatPay2Credentials(entity.getMacId(), privateKeySigner);
-        // 使用定时更新的签名验证器，不需要传入证书
-        return new ScheduledUpdateCertificatesVerifier(
-                wechatPay2Credentials, entity.getApiV3Key().getBytes(StandardCharsets.UTF_8));
+        //获取证书管理器实例
+        CertificatesManager certificatesManager = CertificatesManager.getInstance();
+        // 验证器
+        Verifier verifier = null;
+
+        try {
+            // 向证书管理器增加需要自动更新平台证书的商户信息
+            certificatesManager.putMerchant(entity.getMacId(), new WechatPay2Credentials(entity.getMacId(),
+                    new PrivateKeySigner(entity.getMacSerialNo(), privateKey)), entity.getApiV3Key().getBytes(StandardCharsets.UTF_8));
+            verifier = certificatesManager.getVerifier(entity.getMacId());
+        } catch (Exception e) {
+            throw new RuntimeException("证书管理器初始化失败", e);
+        }
+        return new WechatPay2Validator(verifier);
     }
 
     /**
@@ -90,7 +98,7 @@ public class WxPayConfig {
      * @return
      */
     @Bean(name = "wxPayClient")
-    public CloseableHttpClient getWxPayClient(ScheduledUpdateCertificatesVerifier verifier) {
+    public CloseableHttpClient getWxPayClient(WechatPay2Validator verifier) {
         log.info("获取http请求对象");
         SystemWeChatJsapiPay entity = weChatJsapiPayService.getWeChatJsapiPay();
         if (Objects.isNull(entity)) throw new BizException("微信JSAPI支付配置信息不存在");
@@ -98,7 +106,7 @@ public class WxPayConfig {
         PrivateKey privateKey = getPrivateKey(entity.getPrivateKeyPath());
         WechatPayHttpClientBuilder builder = WechatPayHttpClientBuilder.create()
                 .withMerchant(entity.getMacId(), entity.getMacSerialNo(), privateKey)
-                .withValidator(new WechatPay2Validator(verifier));
+                .withValidator(verifier);
         // ... 接下来，可以通过builder设置各种参数，来配置HttpClient
         // 通过WechatPayHttpClientBuilder构造的HttpClient，会自动的处理签名和验签，并进行证书自动更新
         return builder.build();

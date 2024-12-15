@@ -18,14 +18,14 @@
 
     <!--版本管理-->
     <properties>
-        <java.version>1.8</java.version>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <revision>1.0.0-SNAPSHOT</revision>
-        <spring.boot.version>2.6.0</spring.boot.version>
-        <maven.compiler.plugin>3.8.0</maven.compiler.plugin>
+        <spring.boot.version>2.7.13</spring.boot.version>
+        <maven.compiler.plugin>3.11.0</maven.compiler.plugin>
     </properties>
 
     <!-- 依赖声明 -->
@@ -61,6 +61,12 @@
                 <groupId>cn.com.betacat.parkerpal</groupId>
                 <artifactId>core</artifactId>
                 <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.32</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
