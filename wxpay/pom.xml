@@ -14,11 +14,11 @@
   <packaging>jar</packaging>
 
   <properties>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <wechatpay>0.3.0</wechatpay>
+    <wechatpay>0.4.9</wechatpay>
   </properties>
 
   <dependencies>
@@ -31,6 +31,7 @@
       <groupId>com.github.wechatpay-apiv3</groupId>
       <artifactId>wechatpay-apache-httpclient</artifactId>
       <version>${wechatpay}</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
