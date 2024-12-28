@@ -7,8 +7,10 @@ import cn.com.betacat.parkerpal.wxpay.service.WeChatJsapiPayService;
 import com.wechat.pay.contrib.apache.httpclient.WechatPayHttpClientBuilder;
 import com.wechat.pay.contrib.apache.httpclient.auth.PrivateKeySigner;
 import com.wechat.pay.contrib.apache.httpclient.auth.Verifier;
+import com.wechat.pay.contrib.apache.httpclient.auth.Verifier;
 import com.wechat.pay.contrib.apache.httpclient.auth.WechatPay2Credentials;
 import com.wechat.pay.contrib.apache.httpclient.auth.WechatPay2Validator;
+import com.wechat.pay.contrib.apache.httpclient.cert.CertificatesManager;
 import com.wechat.pay.contrib.apache.httpclient.cert.CertificatesManager;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
 import java.io.InputStream;
@@ -66,6 +68,7 @@ public class WxPayConfig {
     /**
      * 获取签名验证器
      *
+     * @return WechatPay2Validator
      * @return WechatPay2Validator
      */
     @Bean(name = "getVerifier")

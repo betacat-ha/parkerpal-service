@@ -15,11 +15,11 @@ swagger:
   #是否开启swagger文档，true|开启  false｜关闭
   enable: true
   # 标题
-  title: "智慧停车接口文档"
+  title: "智泊无忧接口文档"
   # 说明
-  description: "智慧停车接口文档描述"
+  description: "智泊无忧接口文档描述"
   # 版本号
-  version: "1.0.1"
+  version: "1.0.0"
 
 # 文件上传配置
 file:
