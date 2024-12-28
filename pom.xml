@@ -12,6 +12,7 @@
     <modules>
         <module>common</module>
         <module>wxpay</module>
+        <module>algorithm-wrapper</module>
         <module>core</module>
     </modules>
 
@@ -53,6 +54,12 @@
             <dependency>
                 <groupId>cn.com.betacat.parkerpal</groupId>
                 <artifactId>wxpay</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.com.betacat.parkerpal</groupId>
+                <artifactId>algorithm-wrapper</artifactId>
                 <version>${revision}</version>
             </dependency>
 

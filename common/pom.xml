@@ -18,22 +18,22 @@
     <maven.compiler.target>8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <!--持久层-->
+    <!-- 持久层 -->
     <mybatis.plus.boot.starter.version>3.5.2</mybatis.plus.boot.starter.version>
     <druid.spring.boot.starter.version>1.2.4</druid.spring.boot.starter.version>
     <mybatis.spring.boot.tarter.version>2.2.0</mybatis.spring.boot.tarter.version>
     <dynamic.datasource.spring.boot.starter.version>3.2.1</dynamic.datasource.spring.boot.starter.version>
 
-    <!--swagger-->
+    <!-- 接口文档 -->
     <knife4j.version>3.0.3</knife4j.version>
     <springfox.swagger2.version>3.0.0</springfox.swagger2.version>
 
-    <!--数据转换-->
-    <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+    <!-- 数据转换 -->
+    <mapstruct.version>1.5.3.Final</mapstruct.version>
     <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
     <lombok.version>1.18.24</lombok.version>
 
-    <!--第三方工具-->
+    <!-- 第三方工具 -->
     <cglib.version>3.2.12</cglib.version>
     <hutool.version>5.7.3</hutool.version>
     <velocity.version>1.7</velocity.version>
@@ -43,27 +43,27 @@
     <fastjson.version>1.2.75</fastjson.version>
     <commons.io.version>2.7</commons.io.version>
     <javax.inject.version>1</javax.inject.version>
-    <com.sun.jna>3.0.9</com.sun.jna>
-    <com.google.zxing>3.3.0</com.google.zxing>
-    <org.bouncycastle>1.62</org.bouncycastle>
-    <com.jcraft>0.1.55</com.jcraft>
+    <google.zxing.version>3.3.0</google.zxing.version>
+    <bouncycastle.version>1.62</bouncycastle.version>
+    <jcraft.version>0.1.55</jcraft.version>
   </properties>
 
-  <!--依赖管理-->
   <dependencies>
-    <!--模版引擎-->
+    <!-- 模版引擎 -->
     <dependency>
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>
       <version>${velocity.version}</version>
     </dependency>
-    <!--图片压缩-->
+
+    <!-- 图片压缩 -->
     <dependency>
       <groupId>net.coobird</groupId>
       <artifactId>thumbnailator</artifactId>
       <version>${coobrid.version}</version>
     </dependency>
-    <!--解析xml-->
+
+    <!-- 解析xml -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
@@ -80,26 +80,30 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- 数据转换 -->
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
-      <version>${org.mapstruct.version}</version>
+      <version>${mapstruct.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct-processor</artifactId>
-      <version>${org.mapstruct.version}</version>
+      <version>${mapstruct.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok-mapstruct-binding</artifactId>
       <version>${lombok.mapstruct.binding.version}</version>
     </dependency>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <version>${javax.inject.version}</version>
-    </dependency>
+
+    <!-- 数据库相关 -->
     <dependency>
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -124,6 +128,11 @@
       <artifactId>mybatis-plus-boot-starter</artifactId>
       <version>${mybatis.plus.boot.starter.version}</version>
     </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+
     <!-- knife4j接口文档 -->
     <dependency>
       <groupId>io.springfox</groupId>
@@ -159,36 +168,19 @@
         </exclusion>
       </exclusions>
     </dependency>
+
     <!-- JWT依赖 -->
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
       <version>${java.jwt.version}</version>
     </dependency>
-    <dependency>
-      <groupId>cn.hutool</groupId>
-      <artifactId>hutool-all</artifactId>
-      <version>${hutool.version}</version>
-    </dependency>
-    <!-- io常用工具类 -->
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>${commons.io.version}</version>
-    </dependency>
-    <!-- 阿里JSON解析器 -->
-    <dependency>
-      <groupId>com.alibaba</groupId>
-      <artifactId>fastjson</artifactId>
-      <version>${fastjson.version}</version>
-    </dependency>
 
-    <!--引入AOP依赖-->
+    <!-- 引入AOP依赖 -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-aop</artifactId>
     </dependency>
-    <!--AOP-->
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
@@ -218,18 +210,28 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
     </dependency>
-    <!--lombook-->
+
+    <!-- 工具类 -->
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>${lombok.version}</version>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons.io.version}</version>
     </dependency>
-    <!-- mysql-->
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>${fastjson.version}</version>
     </dependency>
-    <!--工具类-->
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+      <version>${hutool.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>${javax.inject.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -242,24 +244,20 @@
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>
-
-    <!-- Other dependencies -->
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>core</artifactId>
-      <version>${com.google.zxing}</version>
+      <version>${google.zxing.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk15on</artifactId>
-      <version>${org.bouncycastle}</version>
+      <version>${bouncycastle.version}</version>
     </dependency>
-
     <dependency>
       <groupId>com.jcraft</groupId>
       <artifactId>jsch</artifactId>
-      <version>${com.jcraft}</version>
+      <version>${jcraft.version}</version>
     </dependency>
   </dependencies>
 
