@@ -1,12 +1,19 @@
 
 # 项目概述
 
-该智慧停车场项目为前后端分离架构，本仓库为后端源码仓库，前端基于Vue3.0版本结合TypeScript，UI框架采用elementPlus，后端使用java进行编写，以Springboot 2.6.0 + mysql 8.0.3 + mybatis plus 3.5.2 + knife4j 3.0.3 + mapstruct 1.3.1.Final 作为核心框架进行开发。
+该智慧停车场项目为前后端分离架构，本仓库为后端源码仓库。
 
-mysql           数据库
-knife4j         作为接口文档
-mybatis plus    作为数据层
-mapstruct       作为数据转换
+使用技术栈
+
+| 技术名称       | 版本          | 用途描述                               |
+|--------------|-------------|------------------------------------|
+| Spring Boot  | 2.6.0       | 基本框架                               |
+| MySQL        | 8.0.3       | 数据库                                |
+| Knife4j      | 3.0.3       | 接口文档                               |
+| MyBatis-Plus | 3.5.2       | 半ORM，简化CRUD操作                      |
+| MapStruct    | 1.3.1.Final | 代码生成器，用于简化不同对象模型之间的映射转换。 |
+
+前端使用Vue3.0 + TypeScript + Element-Plus搭建。
 
 ## 启动
 
@@ -16,11 +23,9 @@ mapstruct       作为数据转换
 
 ## 部署
 
-部署文档存放在源码中，路径为：smartparking/src/main/resources/doc
+部署文档存放在源码中，路径为：core/src/main/resources/doc
 
-脚本部署：
-
-LINUX环境部署启动步骤：
+Linux环境部署启动步骤：
 
 1. 先项目使用maven自带的package命令打包成jar包。
 
