@@ -10,28 +10,20 @@
   </parent>
 
   <groupId>cn.com.betacat.parkerpal</groupId>
-  <artifactId>wxpay</artifactId>
+  <artifactId>algorithm-wrapper</artifactId>
   <packaging>jar</packaging>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <wechatpay>0.4.9</wechatpay>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>cn.com.betacat.parkerpal</groupId>
-      <artifactId>common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.github.wechatpay-apiv3</groupId>
-      <artifactId>wechatpay-apache-httpclient</artifactId>
-      <version>${wechatpay}</version>
-      <scope>compile</scope>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.13.0</version>
     </dependency>
   </dependencies>
 
