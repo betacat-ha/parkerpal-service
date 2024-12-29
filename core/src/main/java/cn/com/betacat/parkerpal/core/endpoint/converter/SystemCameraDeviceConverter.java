@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 系统管理-摄像头设备管理表(SystemCameraDevice) 转换工具类
  *
- * @author zoey
+ * @author 
  * @since 2024-08-14 10:25:42
  */
 @Mapper(builder = @Builder(disableBuilder = true))

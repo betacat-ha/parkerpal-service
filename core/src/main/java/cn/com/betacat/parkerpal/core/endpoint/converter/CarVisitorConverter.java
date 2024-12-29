@@ -18,7 +18,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * 车辆管理-访客车登记管理表(CarVisitor) 转换工具类
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 13:03:03
  */
 @Mapper(builder = @Builder(disableBuilder = true))

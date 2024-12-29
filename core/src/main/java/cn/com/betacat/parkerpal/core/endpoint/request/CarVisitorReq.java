@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 车辆管理-访客车登记管理表(CarVisitor)输入DTO
  *
- * @author zoey
+ * @author 
  * @since 2024-08-14 13:03:03
  */
 public class CarVisitorReq implements Serializable {

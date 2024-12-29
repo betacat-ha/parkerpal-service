@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 月保-缴费记录(MonthlyInsurancePayment)表数据库访问层
  *
- * @author zoey
+ * @author 
  * @since 2024-08-16 13:23:20
  */
 @Repository

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 车辆管理-vip月租车登记管理表(CarVpiMonthlyRent)输出DTO
  *
- * @author zoey
+ * @author 
  * @since 2024-08-14 13:03:04
  */
 public class CarVpiMonthlyRentResp implements Serializable {

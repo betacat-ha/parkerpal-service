@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 订单-车辆出库已支付订单记录(OrderPaidCatOutbound)输入DTO
  *
- * @author zoey
+ * @author
  * @since 2024-08-20 13:50:21
  */
 public class OrderPaidCatOutboundReq implements Serializable {

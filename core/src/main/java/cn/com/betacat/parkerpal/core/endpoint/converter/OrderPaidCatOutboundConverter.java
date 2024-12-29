@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 订单-车辆出库已支付订单记录(OrderPaidCatOutbound) 转换工具类
  *
- * @author zoey
+ * @author
  * @since 2024-08-20 13:50:20
  */
 @Mapper(builder = @Builder(disableBuilder = true))

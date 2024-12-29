@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 订单-车辆出库已支付订单记录(OrderPaidCatOutbound)查询类
  *
- * @author zoey
+ * @author
  * @since 2024-08-20 13:50:20
  */
 @Getter

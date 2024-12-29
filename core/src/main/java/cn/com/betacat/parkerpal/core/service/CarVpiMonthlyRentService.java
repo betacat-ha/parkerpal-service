@@ -8,7 +8,7 @@ import cn.com.betacat.parkerpal.common.pageutil.PageInfoRespQuery;
 /**
  * 车辆管理-vip月租车登记管理表(CarVpiMonthlyRent)表服务接口
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 13:03:03
  */
 public interface CarVpiMonthlyRentService extends IService<CarVpiMonthlyRent> {

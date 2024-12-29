@@ -13,7 +13,7 @@ import java.io.Serializable;
 /**
  * 系统管理-收费规则表(SystemChargeRules)实体类
  *
- * @author zoey
+ * @author 
  * @since 2024-08-15 14:32:02
  */
 @Data

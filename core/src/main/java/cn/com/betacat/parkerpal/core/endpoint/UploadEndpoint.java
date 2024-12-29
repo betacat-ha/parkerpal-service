@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * @Author: Zoey
+ * @Author:
  * @Since: 2024-08-14 17:19:48
  * @Description:
  */

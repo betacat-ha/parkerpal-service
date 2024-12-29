@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 系统管理-微信JSAPI支付配置(SystemWeChatJsapiPay)表服务实现类
  *
- * @author zoey
+ * @author 
  * @since 2024-09-06 14:05:29
  */
 @Service

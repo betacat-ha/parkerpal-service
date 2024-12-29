@@ -3,7 +3,7 @@ package cn.com.betacat.parkerpal.common.exception;
 import lombok.Data;
 
 /**
- * @Author: Zoey
+ * @Author: 
  * @Date: 2024/1/4
  * @Time: 上午9:44
  * @Describe:

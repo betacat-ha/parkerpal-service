@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 /**
  * 商户-停车领劵(ParkCollectCoupons)实体类
  *
- * @author zoey
+ * @author
  * @since 2024-08-22 09:56:37
  */
 @Data

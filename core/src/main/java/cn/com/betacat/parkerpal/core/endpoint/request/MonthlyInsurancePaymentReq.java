@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 月保-缴费记录(MonthlyInsurancePayment)输入DTO
  *
- * @author zoey
+ * @author
  * @since 2024-08-16 13:23:24
  */
 public class MonthlyInsurancePaymentReq implements Serializable {

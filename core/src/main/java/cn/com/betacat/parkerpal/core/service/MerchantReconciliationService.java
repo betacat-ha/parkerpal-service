@@ -9,7 +9,7 @@ import cn.com.betacat.parkerpal.common.pageutil.PageInfoRespQuery;
 /**
  * 商户-对账记录(MerchantReconciliation)表服务接口
  *
- * @author zoey
+ * @author 
  * @since 2024-08-20 13:13:44
  */
 public interface MerchantReconciliationService extends IService<MerchantReconciliation> {

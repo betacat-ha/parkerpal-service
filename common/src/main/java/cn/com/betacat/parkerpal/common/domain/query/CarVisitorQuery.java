@@ -10,7 +10,7 @@ import lombok.Setter;
 /**
  * 车辆管理-访客车登记管理表(CarVisitor)查询类
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 13:03:03
  */
 @Getter

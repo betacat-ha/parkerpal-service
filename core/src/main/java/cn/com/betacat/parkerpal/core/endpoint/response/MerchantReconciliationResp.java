@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 商户-对账记录(MerchantReconciliation)输出DTO
  *
- * @author zoey
+ * @author 
  * @since 2024-08-20 13:13:44
  */
 public class MerchantReconciliationResp implements Serializable {

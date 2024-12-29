@@ -8,7 +8,7 @@ import cn.com.betacat.parkerpal.common.pageutil.PageInfoRespQuery;
 /**
  * 车辆管理-访客车登记管理表(CarVisitor)表服务接口
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 13:03:03
  */
 public interface CarVisitorService extends IService<CarVisitor> {

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 系统管理-角色表(SystemRole)输出DTO
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 09:23:52
  */
 public class SystemRoleResp implements Serializable {

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 /**
  * 车辆管理-访客车登记管理表(CarVisitor)实体类
  *
- * @author zoey
+ * @author 
  * @since 2024-08-14 13:03:02
  */
 @Data

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 车辆管理-vip月租车登记管理表(CarVpiMonthlyRent) 转换工具类
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 13:03:03
  */
 @Mapper(builder = @Builder(disableBuilder = true))

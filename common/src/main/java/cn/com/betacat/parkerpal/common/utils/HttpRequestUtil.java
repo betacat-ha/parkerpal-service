@@ -15,7 +15,7 @@ import java.net.URLConnection;
 import java.util.Map;
 
 /**
- * @Author: Zoey
+ * @Author:
  * @Date: 2023/9/20
  * @Time: 下午3:22
  * @Describe: http请求工具类

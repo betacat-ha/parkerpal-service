@@ -14,7 +14,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * 系统管理-用户表(SystemUsers) 转换工具类
  *
- * @author zoey
+ * @author 
  * @since 2024-08-13 15:25:13
  */
 @Mapper(builder = @Builder(disableBuilder = true))

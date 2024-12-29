@@ -11,7 +11,7 @@
 
     <groupId>cn.com.betacat.parkerpal</groupId>
     <artifactId>iot</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>iot</name>
     <description>iot</description>
 
@@ -46,11 +46,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
+        <!-- <dependency> -->
+        <!--     <groupId>org.projectlombok</groupId> -->
+        <!--     <artifactId>lombok</artifactId> -->
+        <!--      -->
+        <!-- </dependency> -->
 
         <dependency>
             <groupId>cn.com.betacat.parkerpal</groupId>
@@ -80,6 +80,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>1.18.32</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

@@ -4,7 +4,7 @@ import cn.com.betacat.parkerpal.common.exception.BaseErrorInfoInterface;
 import lombok.Getter;
 
 /**
- * @Author: Zoey
+ * @Author:
  * @Since: 2024-06-07 13:02:24
  * @Description: 自定义响应信息枚举
  */

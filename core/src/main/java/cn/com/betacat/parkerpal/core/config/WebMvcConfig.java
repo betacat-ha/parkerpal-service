@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 /**
- * @Author: Zoey
+ * @Author:
  * @Since: 2024-06-07 13:11:50
  * @Description:
  */

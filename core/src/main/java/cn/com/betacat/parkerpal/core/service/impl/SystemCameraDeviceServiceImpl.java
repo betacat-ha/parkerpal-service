@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 /**
  * 系统管理-摄像头设备管理表(SystemCameraDevice)表服务实现类
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 10:25:42
  */
 @Service

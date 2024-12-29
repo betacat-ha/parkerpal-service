@@ -19,7 +19,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * 月保-缴费记录(MonthlyInsurancePayment) 转换工具类
  *
- * @author zoey
+ * @author
  * @since 2024-08-16 13:23:23
  */
 @Mapper(builder = @Builder(disableBuilder = true))

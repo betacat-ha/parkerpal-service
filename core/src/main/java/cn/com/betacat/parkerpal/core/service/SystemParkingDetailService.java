@@ -8,7 +8,7 @@ import cn.com.betacat.parkerpal.common.pageutil.PageInfoRespQuery;
 /**
  * 系统管理-车位数量明细表(SystemParkingDetail)表服务接口
  *
- * @author zoey
+ * @author 
  * @since 2024-08-15 16:24:56
  */
 public interface SystemParkingDetailService extends IService<SystemParkingDetail> {

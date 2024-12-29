@@ -15,7 +15,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 /**
- * @Author: Zoey
+ * @Author: 
  * @Since: 2024-08-23 14:36:01
  * @Description:
  */

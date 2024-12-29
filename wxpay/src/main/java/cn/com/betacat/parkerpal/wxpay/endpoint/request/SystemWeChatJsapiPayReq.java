@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * 系统管理-微信JSAPI支付配置(SystemWeChatJsapiPay)输入DTO
  *
- * @author zoey
+ * @author 
  * @since 2024-09-06 14:05:30
  */
 public class SystemWeChatJsapiPayReq implements Serializable {

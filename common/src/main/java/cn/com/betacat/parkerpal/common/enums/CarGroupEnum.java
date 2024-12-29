@@ -3,7 +3,7 @@ package cn.com.betacat.parkerpal.common.enums;
 import lombok.Getter;
 
 /**
- * @Author: Zoey
+ * @Author:
  * @Since: 2024-08-16 09:38:24
  * @Description: 车辆所属类型枚举
  */

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @Author: Zoey
+ * @Author: 
  * @Since: 2024-08-27 13:53:33
  * @Description: 订单支付枚举
  */

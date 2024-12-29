@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 系统管理-角色表(SystemRole)表数据库访问层
  *
- * @author zoey
+ * @author
  * @since 2024-08-13 15:25:27
  */
 @Repository

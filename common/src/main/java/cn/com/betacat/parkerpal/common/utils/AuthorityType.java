@@ -1,7 +1,7 @@
 package cn.com.betacat.parkerpal.common.utils;
 
 /**
- * @Author: Zoey
+ * @Author: 
  * @Date: 2023/7/12
  * @Time: 下午5:21
  * @Describe: 接口类型

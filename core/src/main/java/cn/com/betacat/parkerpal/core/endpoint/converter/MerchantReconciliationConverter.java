@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 商户-对账记录(MerchantReconciliation) 转换工具类
  *
- * @author zoey
+ * @author
  * @since 2024-08-20 13:13:44
  */
 @Mapper(builder = @Builder(disableBuilder = true))

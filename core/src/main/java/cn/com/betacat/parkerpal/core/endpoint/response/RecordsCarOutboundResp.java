@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 记录-车辆出场记录表(RecordsCarOutbound)输出DTO
  *
- * @author zoey
+ * @author 
  * @since 2024-08-14 13:50:45
  */
 public class RecordsCarOutboundResp implements Serializable {

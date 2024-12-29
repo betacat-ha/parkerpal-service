@@ -12,7 +12,7 @@ import java.io.Serializable;
 /**
  * 系统管理-用户和角色关联表(SystemUserRole)实体类
  *
- * @author zoey
+ * @author
  * @since 2024-08-13 15:25:27
  */
 @Data

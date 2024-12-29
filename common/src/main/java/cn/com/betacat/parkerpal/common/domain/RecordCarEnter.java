@@ -15,7 +15,7 @@ import java.io.Serializable;
 /**
  * 记录-车辆进场记录表(RecordCarEnter)实体类
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 13:50:45
  */
 @Data

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 /**
  * 商户-停车领劵(ParkCollectCoupons)表数据库访问层
  *
- * @author zoey
+ * @author 
  * @since 2024-08-22 09:56:37
  */
 @Repository

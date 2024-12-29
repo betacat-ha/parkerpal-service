@@ -5,6 +5,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.Environment;
 
@@ -15,6 +16,7 @@ import java.net.UnknownHostException;
 @EnableAspectJAutoProxy
 @MapperScan("cn.com.betacat.parkerpal.*.mapper")
 @SpringBootApplication
+@ComponentScan(basePackages = {"cn.com.betacat.parkerpal.iot"})
 public class SmartParkingApplication {
 
     public static void main(String[] args) throws UnknownHostException {

@@ -6,7 +6,7 @@ import cn.com.betacat.parkerpal.common.domain.SystemParking;
 /**
  * 系统管理-车位数量表(SystemParking)表服务接口
  *
- * @author zoey
+ * @author
  * @since 2024-08-15 16:24:51
  */
 public interface SystemParkingService extends IService<SystemParking> {

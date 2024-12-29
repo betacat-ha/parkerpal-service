@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * @Author: Zoey
+ * @Author: 
  * @Since: 2024-08-15 14:57:41
  * @Description: 获取收费规则工具类
  */

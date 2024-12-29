@@ -3,7 +3,7 @@ package cn.com.betacat.parkerpal.wxpay.domain;
 import lombok.Data;
 
 /**
- * @Author: Zoey
+ * @Author:
  * @Since: 2024-09-05 13:31:05
  * @Description:
  */

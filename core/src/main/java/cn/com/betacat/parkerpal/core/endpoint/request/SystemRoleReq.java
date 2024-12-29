@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 系统管理-角色表(SystemRole)输入DTO
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 09:23:51
  */
 public class SystemRoleReq implements Serializable {

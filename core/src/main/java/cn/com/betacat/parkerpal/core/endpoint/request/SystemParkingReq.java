@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 系统管理-车位数量表(SystemParking)输入DTO
  *
- * @author zoey
+ * @author 
  * @since 2024-08-15 16:24:53
  */
 public class SystemParkingReq implements Serializable {

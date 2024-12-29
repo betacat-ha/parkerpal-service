@@ -8,7 +8,7 @@ import cn.com.betacat.parkerpal.common.pageutil.PageInfoRespQuery;
 /**
  * 记录-车辆出场记录表(RecordsCarOutbound)表服务接口
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 13:50:45
  */
 public interface RecordsCarOutboundService extends IService<RecordsCarOutbound> {

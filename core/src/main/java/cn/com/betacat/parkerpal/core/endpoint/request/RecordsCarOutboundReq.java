@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 记录-车辆出场记录表(RecordsCarOutbound)输入DTO
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 13:50:45
  */
 public class RecordsCarOutboundReq implements Serializable {

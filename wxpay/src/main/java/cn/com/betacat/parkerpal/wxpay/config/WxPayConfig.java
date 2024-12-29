@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 
 /**
- * @Author: Zoey
+ * @Author: 
  * @Since: 2024-09-05 13:19:17
  * @Description:
  */

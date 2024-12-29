@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * @Author: Zoey
+ * @Author:
  * @Since: 2024-09-02 10:47:40
  * @Description: 车辆进场记录工具类
  */

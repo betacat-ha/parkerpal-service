@@ -9,7 +9,7 @@ import cn.com.betacat.parkerpal.common.pageutil.PageInfoRespQuery;
 /**
  * 月保-缴费记录(MonthlyInsurancePayment)表服务接口
  *
- * @author zoey
+ * @author
  * @since 2024-08-16 13:23:21
  */
 public interface MonthlyInsurancePaymentService extends IService<MonthlyInsurancePayment> {

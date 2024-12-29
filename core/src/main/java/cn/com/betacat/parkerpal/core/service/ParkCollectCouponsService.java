@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * 商户-停车领劵(ParkCollectCoupons)表服务接口
  *
- * @author zoey
+ * @author 
  * @since 2024-08-22 09:56:37
  */
 public interface ParkCollectCouponsService extends IService<ParkCollectCoupons> {

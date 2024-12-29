@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 系统管理-收费规则表(SystemChargeRules)输入DTO
  *
- * @author zoey
+ * @author
  * @since 2024-08-15 14:32:03
  */
 public class SystemChargeRulesReq implements Serializable {

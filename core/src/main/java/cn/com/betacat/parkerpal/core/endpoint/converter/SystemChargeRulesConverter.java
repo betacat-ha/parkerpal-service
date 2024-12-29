@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * 系统管理-收费规则表(SystemChargeRules) 转换工具类
  *
- * @author zoey
+ * @author 
  * @since 2024-08-15 14:32:03
  */
 @Mapper(builder = @Builder(disableBuilder = true))

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 /**
  * 车辆管理-vip月租车登记管理表(CarVpiMonthlyRent)查询类
  *
- * @author zoey
+ * @author 
  * @since 2024-08-14 13:03:03
  */
 @Getter

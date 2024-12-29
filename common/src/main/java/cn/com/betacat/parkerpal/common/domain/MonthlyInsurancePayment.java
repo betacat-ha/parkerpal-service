@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 /**
  * 月保-缴费记录(MonthlyInsurancePayment)实体类
  *
- * @author zoey
+ * @author 
  * @since 2024-08-16 13:23:17
  */
 @Data

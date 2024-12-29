@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 /**
  * 系统管理-车位数量表(SystemParking)表数据库访问层
  *
- * @author zoey
+ * @author 
  * @since 2024-08-15 16:24:50
  */
 @Repository

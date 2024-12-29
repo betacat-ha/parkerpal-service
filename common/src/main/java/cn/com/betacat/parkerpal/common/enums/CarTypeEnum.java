@@ -3,7 +3,7 @@ package cn.com.betacat.parkerpal.common.enums;
 import lombok.Getter;
 
 /**
- * @Author: Zoey
+ * @Author: 
  * @Since: 2024-08-16 15:14:40
  * @Description:
  */

@@ -3,7 +3,7 @@ package cn.com.betacat.parkerpal.common.enums;
 import lombok.Getter;
 
 /**
- * @Author: Zoey
+ * @Author:
  * @Date: 2023/7/13
  * @Time: 上午9:16
  * @Describe: 角色枚举 -- 需要匹配数据库,可自定义

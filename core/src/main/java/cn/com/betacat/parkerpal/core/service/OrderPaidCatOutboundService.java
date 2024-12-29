@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 订单-车辆出库已支付订单记录(OrderPaidCatOutbound)表服务接口
  *
- * @author zoey
+ * @author 
  * @since 2024-08-20 13:50:20
  */
 public interface OrderPaidCatOutboundService extends IService<OrderPaidCatOutbound> {

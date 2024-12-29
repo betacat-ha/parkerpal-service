@@ -3,7 +3,7 @@ package cn.com.betacat.parkerpal.common.domain;
 import lombok.Data;
 
 /**
- * @Author: Zoey
+ * @Author: 
  * @Since: 2024-08-29 13:21:20
  * @Description: 车位统计
  */

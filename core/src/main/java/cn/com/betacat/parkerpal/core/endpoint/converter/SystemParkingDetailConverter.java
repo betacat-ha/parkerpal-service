@@ -18,7 +18,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * 系统管理-车位数量明细表(SystemParkingDetail) 转换工具类
  *
- * @author zoey
+ * @author 
  * @since 2024-08-15 16:24:56
  */
 @Mapper(builder = @Builder(disableBuilder = true))

@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 系统管理-车位数量明细表(SystemParkingDetail)查询类
  *
- * @author zoey
+ * @author
  * @since 2024-08-15 16:24:56
  */
 @Getter

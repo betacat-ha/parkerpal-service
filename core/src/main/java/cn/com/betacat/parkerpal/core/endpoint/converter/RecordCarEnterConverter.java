@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 记录-车辆进场记录表(RecordCarEnter) 转换工具类
  *
- * @author zoey
+ * @author
  * @since 2024-08-14 13:50:45
  */
 @Mapper(builder = @Builder(disableBuilder = true))
