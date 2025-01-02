@@ -281,6 +281,73 @@ create table if not exists system_we_chat_jsapi_pay
     default charset=utf8mb4
     collate=utf8mb4_general_ci;
 
+create table if not exists system_parking_space
+(
+    id          varchar(32)  not null comment 'ID'
+        primary key,
+    name        varchar(255) not null comment '车位名称',
+    type        varchar(32)  not null comment '车位类型',
+    parent_id   int          not null comment '车位父ID',
+    create_time datetime     null comment '创建时间',
+    update_time datetime     null comment '修改时间',
+    is_reserved tinyint      not null default 0 comment '是否预留车位，0|否；1|是',
+    is_occupied tinyint      not null default 0 comment '是否占用车位，0|否；1|是',
+    is_disabled tinyint      not null default 0 comment '是否禁用，0|否；1|是',
+    is_deleted  tinyint      not null default 0 comment '是否删除，0|否；1|是',
+    status      varchar(255) null     default 0 comment '车位状态，用于存储传感器侧的状态'
+)
+    comment '系统管理-车位表'
+    default charset = utf8mb4
+    collate = utf8mb4_general_ci;
+
+create table if not exists iot_device
+(
+    id             varchar(32)  not null comment 'ID'
+        primary key,
+    device_id      varchar(255) not null comment '设备ID',
+    mac_address    varchar(255) not null comment '设备MAC地址',
+    name           varchar(255) null comment '设备名称',
+    location       varchar(255) null comment '设备所在位置',
+    role           int          null comment '设备作用',
+    create_time    datetime     null comment '创建时间',
+    update_time    datetime     null comment '修改时间',
+    group_id       int          null comment '组号',
+    create_user_id int          null comment '创建用户ID',
+    is_disabled    tinyint      not null default 0 comment '是否禁用，0|否；1|是',
+    is_deleted     tinyint      not null default 0 comment '是否删除，0|否；1|是'
+)
+    comment '物联网-设备表'
+    default charset = utf8mb4
+    collate = utf8mb4_general_ci;
+
+create table if not exists iot_device_group
+(
+    id          varchar(32)  not null comment 'ID'
+        primary key,
+    group_name  varchar(255) not null comment '组名称',
+    create_time datetime     null comment '创建时间',
+    update_time datetime     null comment '修改时间',
+    create_user int          null comment '创建用户ID'
+)
+    comment '物联网-设备组表'
+    default charset = utf8mb4
+    collate = utf8mb4_general_ci;
+
+create table if not exists iot_device_parking_space
+(
+    id             varchar(32)  not null comment 'ID'
+        primary key,
+    device_id      varchar(255) not null comment '设备ID',
+    parking_space  varchar(255) not null comment '车位ID',
+    create_time    datetime     null comment '创建时间',
+    update_time    datetime     null comment '修改时间',
+    create_user_id int          null comment '创建用户ID'
+)
+    comment '物联网-设备车位关联表'
+    default charset = utf8mb4
+    collate = utf8mb4_general_ci;
+
+
 ## 初始化管理员用户数据
 insert into system_users (
    id,

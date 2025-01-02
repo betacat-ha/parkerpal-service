@@ -5,6 +5,7 @@ import cn.com.betacat.parkerpal.common.exception.RequestObject;
 import cn.com.betacat.parkerpal.common.exception.ResponseObject;
 import cn.com.betacat.parkerpal.core.endpoint.request.IotDeviceManagementReq;
 import cn.com.betacat.parkerpal.iot.service.MqttService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-// @Api(tags = "IOT端口")
+@Api(tags = "IOT端口")
 @RequestMapping("iot")
 public class IotEndpoint {
     @Autowired
