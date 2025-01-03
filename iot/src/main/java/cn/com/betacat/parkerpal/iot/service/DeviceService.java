@@ -23,5 +23,10 @@ public interface DeviceService {
      */
     void sendConfig(String macAddress);
 
+    /**
+     * 获取设备状态
+     * @param deviceId 设备ID
+     * @return 设备状态
+     */
     IotDeviceStatus getIotStatus(String deviceId);
 }

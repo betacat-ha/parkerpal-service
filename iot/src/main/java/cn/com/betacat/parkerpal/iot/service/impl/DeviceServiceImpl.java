@@ -12,6 +12,7 @@ import cn.com.betacat.parkerpal.iot.service.RedisService;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -27,6 +28,12 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Autowired
     private MqttService mqttService;
+
+    @Value("${mqtt.topic.subscribe}")
+    private String subscribedTopic;
+
+    @Value("${mqtt.topic.space-sensor.prefix}")
+    private String spaceSensorPrefix;
 
     @Override
     public void setDeviceStatus(IotDeviceStatus deviceStatus) {
@@ -79,21 +86,16 @@ public class DeviceServiceImpl implements DeviceService {
         IotDevice iotDevice = iotDeviceMapper.getByMacAddress(macAddress);
         if (iotDevice == null) {
             log.warn("设备配置下发失败，设备不存在：" + macAddress);
-            JSONObject error = new JSONObject();
-            error.put("type", IotConstant.MESSAGE_TYPE_CONFIGURATION_MAC_ADDRESS_NOT_FOUND);
-            error.put("msg", IotConstant.MESSAGE_DETAIL_CONFIGURATION_MAC_ADDRESS_NOT_FOUND);
-            mqttService.sendToSpaceSensor(macAddress, JSONObject.toJSONString(error));
+            sendErrorToSpaceSensor(macAddress, IotConstant.MESSAGE_CODE_NOT_FOUND, IotConstant.MESSAGE_DETAIL_CONFIGURATION_MAC_ADDRESS_NOT_FOUND);
             return;
         }
 
         JSONObject deviceConfig = (JSONObject) JSONObject.toJSON(iotDevice);
 
-        // 添加消息类型
-        deviceConfig.put("type", IotConstant.MESSAGE_TYPE_CONFIGURATION_REPLY);
+        // 添加操作命令，告诉设备是配置
+        deviceConfig.put(IotConstant.JSON_KEY_OPERATION, IotConstant.MESSAGE_OPERATION_CONFIGURATION);
 
-
-        mqttService.sendToSpaceSensor(macAddress, JSONObject.toJSONString(deviceConfig));
-
+        sendSuccessToSpaceSensor(macAddress, deviceConfig.toJSONString());
     }
 
 
@@ -101,6 +103,35 @@ public class DeviceServiceImpl implements DeviceService {
     public IotDeviceStatus getIotStatus(String deviceId) {
         Object status = redisService.get(deviceId + RedisMessageConstant.IOT_DEVICE_STATUS);
         return status == null ? null : (IotDeviceStatus) status;
+    }
+
+    public void sendToSpaceSensor(String macAddress, String payload) {
+        // 发送消息到指定设备
+        mqttService.sendToMqtt(subscribedTopic + "/" + spaceSensorPrefix + macAddress, 1, payload);
+    }
+
+    public void sendSuccessToSpaceSensor(String macAddress, String data) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(IotConstant.JSON_KEY_CODE, IotConstant.MESSAGE_CODE_SUCCESS);
+        jsonObject.put(IotConstant.JSON_KEY_DATA, data);
+        sendToSpaceSensor(macAddress, jsonObject.toJSONString());
+    }
+
+    public void sendErrorToSpaceSensor(String macAddress, String data, String code, String message) {
+        JSONObject result = new JSONObject();
+        result.put(IotConstant.JSON_KEY_CODE, code);
+        result.put(IotConstant.JSON_KEY_MESSAGE, message);
+        result.put(IotConstant.JSON_KEY_DATA, data);
+
+        sendToSpaceSensor(macAddress, result.toJSONString());
+    }
+
+    public void sendErrorToSpaceSensor(String macAddress, String code) {
+        sendErrorToSpaceSensor(macAddress, null, code, IotConstant.MESSAGE_CODE_MAP.get(code));
+    }
+
+    public void sendErrorToSpaceSensor(String macAddress, String code, String message) {
+        sendErrorToSpaceSensor(macAddress, null, code, message);
     }
 
 }

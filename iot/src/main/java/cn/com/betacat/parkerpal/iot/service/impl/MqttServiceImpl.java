@@ -36,40 +36,6 @@ public class MqttServiceImpl implements MqttService {
     }
 
     @Override
-    public void sendToSpaceSensor(String macAddress, String payload) {
-        // 发送消息到指定设备
-        mqttGateway.sendToMqtt(subscribedTopic + "/" + spaceSensorPrefix + macAddress, 1, payload);
-    }
-
-    public void sendSuccessToSpaceSensor(String macAddress, String data) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(IotConstant.JSON_KEY_CODE, IotConstant.MESSAGE_CODE_SUCCESS);
-        jsonObject.put(IotConstant.JSON_KEY_DATA, data);
-        sendToSpaceSensor(macAddress, jsonObject.toJSONString());
-    }
-
-    public void sendErrorToSpaceSensor(String macAddress, String data, String code, String message) {
-        JSONObject result = new JSONObject();
-        result.put(IotConstant.JSON_KEY_CODE, code);
-        result.put(IotConstant.JSON_KEY_MESSAGE, message);
-        result.put(IotConstant.JSON_KEY_DATA, data);
-
-        sendToSpaceSensor(macAddress, result.toJSONString());
-    }
-
-    public void sendErrorToSpaceSensor(String macAddress, String code) {
-        sendErrorToSpaceSensor(macAddress, null, code, IotConstant.MESSAGE_CODE_MAP.get(code));
-    }
-
-    public void sendErrorToSpaceSensor(String macAddress, String code, String message) {
-        sendErrorToSpaceSensor(macAddress, null, code, message);
-    }
-
-
-
-
-
-    @Override
     public void handleMessage(String topic, String payload) {
         String deviceId = null;
         JSONObject jsonObject = null;
@@ -91,6 +57,7 @@ public class MqttServiceImpl implements MqttService {
                 return;
             }
 
+
             // 处理消息
             switch (jsonObject.getString(IotConstant.JSON_KEY_TYPE)) {
                 case IotConstant.MESSAGE_TYPE_SPACE_STATUS -> {
@@ -107,22 +74,22 @@ public class MqttServiceImpl implements MqttService {
 
                 }
                 case IotConstant.MESSAGE_TYPE_CONFIGURATION_REQUEST -> {
+                    // 从负载中获取mac地址
+                    String macAddress = (String) jsonObject.get(IotConstant.JSON_KEY_MAC_ADDRESS);
                     // 处理设备的配置请求
+                    deviceService.sendConfig(macAddress);
+                }
+                case IotConstant.MESSAGE_TYPE_CONFIGURATION_COMPLETE -> {
+                    // 处理设备的配置回复
 
                 }
                 default -> log.warn("未知消息类型：" + jsonObject.getString(IotConstant.JSON_KEY_TYPE));
             }
-
         } catch (Exception e) {
             log.error("处理消息时发生错误：" + e.getMessage());
             log.debug("丢弃消息：主题[" + topic + "]，负载：" + payload);
         }
         // redisService.setIotStatus(deviceId, payload);
-
-
-
-
-
 
     }
 }

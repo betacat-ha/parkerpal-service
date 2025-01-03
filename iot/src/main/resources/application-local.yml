@@ -3,11 +3,14 @@ server:
   port: 37902
 
 spring:
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/smart_parking?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
-#    username: root
-#    password: root
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/smart_parking?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    username: root
+    password: root
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 # MQTT配置
 mqtt:
@@ -26,5 +29,7 @@ mqtt:
   topic:
     default: /parkerpal/#
     subscribe: /parkerpal
+    space-sensor:
+      prefix: Sensor-Sub-
   # QoS
   qos: 1
