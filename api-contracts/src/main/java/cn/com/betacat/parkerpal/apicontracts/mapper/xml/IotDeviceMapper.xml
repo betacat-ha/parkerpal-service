@@ -5,7 +5,6 @@
     <!--@mbg.generated-->
     <!--@Table iot_device-->
     <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
     <result column="mac_address" jdbcType="VARCHAR" property="macAddress" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="location" jdbcType="VARCHAR" property="location" />
@@ -19,7 +18,52 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, device_id, mac_address, `name`, `location`, `role`, create_time, update_time,
+    id, mac_address, `name`, `location`, `role`, create_time, update_time,
     group_id, create_user_id, is_disabled, is_deleted
   </sql>
+
+
+  <sql id="Join_Column_List">
+    <!--@mbg.generated-->
+    iot_device.id as iot_device_id,
+    iot_device.mac_address as iot_device_mac_address,
+    iot_device.name as iot_device_name,
+    iot_device.location as iot_device_location,
+    iot_device.role as iot_device_role,
+    iot_device.create_time as iot_device_create_time,
+    iot_device.update_time as iot_device_update_time,
+    iot_device.group_id as iot_device_group_id,
+    iot_device.create_user_id as iot_device_create_user_id,
+    iot_device.is_disabled as iot_device_is_disabled,
+    iot_device.is_deleted as iot_device_is_deleted
+  </sql>
+  <resultMap id="JoinResultMap" type="cn.com.betacat.parkerpal.iot.domain.IotDevice">
+    <!--@mbg.generated-->
+    <id column="iot_device_id" property="id"/>
+    <result column="iot_device_mac_address" property="macAddress"/>
+    <result column="iot_device_name" property="name"/>
+    <result column="iot_device_location" property="location"/>
+    <result column="iot_device_role" property="role"/>
+    <result column="iot_device_create_time" property="createTime"/>
+    <result column="iot_device_update_time" property="updateTime"/>
+    <result column="iot_device_group_id" property="groupId"/>
+    <result column="iot_device_create_user_id" property="createUserId"/>
+    <result column="iot_device_is_disabled" property="isDisabled"/>
+    <result column="iot_device_is_deleted" property="isDeleted"/>
+  </resultMap>
+  <resultMap id="getByMacAddressWithSpaces" type="cn.com.betacat.parkerpal.iot.domain.IotDevice" extends="JoinResultMap">
+    <association property="parkingSpace" javaType="java.util.List" resultMap="cn.com.betacat.parkerpal.iot.mapper.SystemParkingSpaceMapper.JoinResultMap" />
+  </resultMap>
+
+  <select id="getByMacAddressWithSpaces" resultMap="getByMacAddressWithSpaces">
+    <!--@mbg.generated-->
+    select
+    <include refid="Join_Column_List"/>,
+    <include refid="cn.com.betacat.parkerpal.iot.mapper.SystemParkingSpaceMapper.Join_Column_List">
+    </include>
+    from iot_device join system_parking_space on iot_device.id = system_parking_space.device_id
+    where mac_address = #{macAddress}
+  </select>
+
+
 </mapper>

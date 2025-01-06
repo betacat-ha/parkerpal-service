@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 物联网-设备表
@@ -19,12 +20,6 @@ public class IotDevice {
      */
     @TableId(value = "id", type = IdType.INPUT)
     private String id;
-
-    /**
-     * 设备ID
-     */
-    @TableField(value = "device_id")
-    private String deviceId;
 
     /**
      * 设备MAC地址
@@ -85,6 +80,7 @@ public class IotDevice {
      */
     @TableField(value = "is_deleted")
     private Byte isDeleted;
+
     @TableField(exist = false)
-    private ParkingSpace[] parkingSpace;
+    private List<ParkingSpace> parkingSpace;
 }
