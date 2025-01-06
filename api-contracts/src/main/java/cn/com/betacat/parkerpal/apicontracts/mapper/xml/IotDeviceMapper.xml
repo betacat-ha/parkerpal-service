@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.betacat.parkerpal.apicontracts.mapper.IotDeviceMapper">
+  <resultMap id="BaseResultMap" type="cn.com.betacat.parkerpal.domain.entity.IotDevice">
+    <!--@mbg.generated-->
+    <!--@Table iot_device-->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="mac_address" jdbcType="VARCHAR" property="macAddress" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="role" jdbcType="INTEGER" property="role" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="group_id" jdbcType="INTEGER" property="groupId" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="is_disabled" jdbcType="TINYINT" property="isDisabled" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, device_id, mac_address, `name`, `location`, `role`, create_time, update_time,
+    group_id, create_user_id, is_disabled, is_deleted
+  </sql>
+</mapper>

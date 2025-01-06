@@ -1,11 +1,15 @@
 package cn.com.betacat.parkerpal.core.interceptor;
 
+import cn.com.betacat.parkerpal.apicontracts.mapper.SystemUsersMapper;
 import cn.com.betacat.parkerpal.common.annotation.PassToken;
-import cn.com.betacat.parkerpal.common.enums.RespEnum;
-import cn.com.betacat.parkerpal.common.exception.BizException;
-import cn.com.betacat.parkerpal.core.utils.LoginUtil;
-import cn.com.betacat.parkerpal.common.mapper.SystemUsersMapper;
+import cn.com.betacat.parkerpal.common.utils.AuthorityType;
+import cn.com.betacat.parkerpal.common.utils.JwtUtil;
+import cn.com.betacat.parkerpal.domain.entity.SystemUsers;
+import cn.com.betacat.parkerpal.domain.enums.RespEnum;
+import cn.com.betacat.parkerpal.domain.enums.RoleEnum;
+import cn.com.betacat.parkerpal.core.exception.BizException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,16 +20,9 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-/**
- * @Author: 
- * @Date: 2024/2/28
- * @Time: 上午11:16
- * @Describe:
- */
 @Slf4j
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
-    // 判断是否开启token验证 true|开启  false｜关闭
     @Value("${global.token}")
     private boolean openOrNotToken;
 
@@ -33,51 +30,84 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     private String authorization;
 
     @Autowired
-    private SystemUsersMapper spUsersMapper;
+    private SystemUsersMapper sysUsersMapper;
 
     @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
-        // 判断是否开启了token验证
-        if (!openOrNotToken) return true;
-        // 如果不是映射到方法直接通过
-        if (!(object instanceof HandlerMethod)) return true;
-        // 获取方法上的注解
-        HandlerMethod handlerMethod = (HandlerMethod) object;
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 如果token验证未开启或不是映射到方法，则直接通过
+        if (!openOrNotToken || !(handler instanceof HandlerMethod)) return true;
+
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
-        // 判断方法上是否有 @PassToken 注解
-        if (method.isAnnotationPresent(PassToken.class)) {
-            PassToken passToken = method.getAnnotation(PassToken.class);
-            // 判断是否需要token验证
-            if (passToken.required()) return true;
-            // 获取token
-            String token = httpServletRequest.getHeader(authorization);
-            // 判断是否存在token
-            if (StringUtils.isBlank(token))
-                throw new BizException(RespEnum.FAILURE.getCode(), "请输入token");
-            // token验证
-            LoginUtil.loginInspect(token, passToken.verifyPermissions(), passToken.authority(), spUsersMapper);
-            return true;
-        }
-        // 如果没有 PassToken 则说明也不需要token，直接免登录
+
+        PassToken passToken = method.getAnnotation(PassToken.class);
+        boolean verifyPermissions = passToken != null && !passToken.required();
+        String authority = passToken != null ? passToken.authority() : AuthorityType.READ;
+
+        // 获取并检查token
+        String token = request.getHeader(authorization);
+        if (StringUtils.isBlank(token))
+            throw new BizException(RespEnum.FAILURE.getCode(), "请输入token");
+
+        // 进行登录验证
+        loginInspect(token, verifyPermissions, authority);
+
         return true;
     }
 
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    private void loginInspect(String token, boolean verifyPermissions, String authority) {
+        // 从token中获取用户名
+        String account = JwtUtil.getAccount(token);
 
+        // 根据账户查找用户信息
+        SystemUsers user = sysUsersMapper.getEntityByAccount(account);
+        if (Objects.isNull(user))
+            throw new BizException(RespEnum.FAILURE.getCode(), "用户不存在");
+
+        // 验证token的有效性
+        if (!JwtUtil.verify(token, account, user.getPassword()))
+            throw new BizException(RespEnum.FAILURE.getCode(), "登录失效，请重新登录");
+
+        // 检查用户状态
+        switch (user.getStatus()) {
+            case 2:
+                throw new BizException(RespEnum.FAILURE.getCode(), "用户【" + account + "】已被锁定");
+            case 3:
+                throw new BizException(RespEnum.FAILURE.getCode(), "用户【" + account + "】已被禁用");
+        }
+
+        // 进一步验证用户权限
+        if (verifyPermissions) {
+            // 判断用户角色是否是超级管理员或是管理员
+            if ((RoleEnum.CJ.getRoleId().equals(user.getRoleId()) || RoleEnum.GL.getRoleId().equals(user.getRoleId()))
+                && authority.equals(AuthorityType.SUPER)) {
+                // 如果是超级管理员或管理员且需要超级权限，则允许访问
+                return;
+            }
+
+            // 获取用户权限
+            String permissions = user.getPermissions();
+            // 判断是否有设置权限, 没有设置权限，则默认只有查询权限
+            if (StringUtils.isBlank(permissions)) {
+                if (!authority.equals(AuthorityType.READ))
+                    throw new BizException(RespEnum.FAILURE.getCode(), "您只有阅读权限");
+            } else {
+                // 增改权限判断
+                if (authority.equals(AuthorityType.CREATE) && !permissions.contains(AuthorityType.CREATE)) {
+                    throw new BizException(RespEnum.FAILURE.getCode(), "您没有新增与编辑权限");
+                }
+                // 删除权限判断
+                if (authority.equals(AuthorityType.DELETE) && !permissions.contains(AuthorityType.DELETE)) {
+                    throw new BizException(RespEnum.FAILURE.getCode(), "您没有删除权限");
+                }
+            }
+        }
     }
 
-    /**
-     * 整个请求结束之后被调用，也就是在DispatchServlet渲染了对应的视图之后执行（主要用于进行资源清理工作）
-     *
-     * @param httpServletRequest
-     * @param httpServletResponse
-     * @param o
-     * @param e
-     * @throws Exception
-     */
     @Override
-    public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
-        log.info("请求结束 执行了 afterCompletion 方法...");
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {}
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
     }
 }

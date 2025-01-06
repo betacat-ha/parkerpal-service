@@ -1,25 +1,18 @@
 package cn.com.betacat.parkerpal.common.utils;
 
-import cn.com.betacat.parkerpal.common.exception.BizException;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
-import cn.com.betacat.parkerpal.common.enums.RespEnum;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.imageio.ImageIO;
 
-/**
- * @Author: 
- * @Since: 2024-08-22 16:37:04
- * @Description:
- */
-public class QRCodeUtil {
+
+public final class QRCodeUtil {
 
     //私有不可更改的变量：生成二维码图片的颜色
     private static final int BLACK = 0xFF000000;
@@ -44,7 +37,8 @@ public class QRCodeUtil {
             createImg(filePath, thirdParty, content, qrName);
             return filePath + qrName;
         } catch (Exception e) {
-            throw new BizException(RespEnum.FAILURE);
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 
