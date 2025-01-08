@@ -25,13 +25,4 @@ public interface IotDeviceMapper extends BaseMapper<IotDevice> {
     IotDevice getByMacAddress(@Param("macAddress") String macAddress);
 
     IotDevice getByMacAddressWithSpaces(@Param("macAddress") String macAddress);
-
-
-    /**
-     * 增加设备
-     *
-     * @param iotDevice 设备信息
-     * @return 是否成功
-     */
-    Boolean addDevice(IotDevice iotDevice);
 }

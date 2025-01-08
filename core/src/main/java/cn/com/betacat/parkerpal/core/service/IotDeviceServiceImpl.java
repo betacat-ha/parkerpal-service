@@ -34,13 +34,13 @@ public class IotDeviceServiceImpl extends
     @Override
     public void setDeviceStatus(IotDeviceStatus deviceStatus) {
         String deviceStatusStr = JSONObject.toJSONString(deviceStatus);
-        RedisUtil.set(deviceStatus.getDeviceId() + RedisMessageConstant.IOT_DEVICE_STATUS, deviceStatusStr);
+        RedisUtil.set(deviceStatus.getId() + RedisMessageConstant.IOT_DEVICE_STATUS, deviceStatusStr);
     }
 
 
     @Override
     public void updateSpaceStatus(IotDeviceStatus deviceStatus) {
-        IotDeviceStatus status = getIotStatus(deviceStatus.getDeviceId());
+        IotDeviceStatus status = getIotStatus(deviceStatus.getId());
 
         // 安全设定，如果设备记录不存在，不允许更新
         if (status == null) {
@@ -55,11 +55,12 @@ public class IotDeviceServiceImpl extends
 
         for (ParkingSpace newSpaceStatus : deviceStatus.getParkingSpace()) {
             // 找到对应的车位
-            ParkingSpace currentSpaceStatus = Arrays.stream(deviceStatus.getParkingSpace()).filter(parkingSpace -> parkingSpace.getId().equals(newSpaceStatus.getId())).findFirst().orElse(null);
+
+            ParkingSpace currentSpaceStatus = deviceStatus.getParkingSpace().stream().filter(parkingSpace -> parkingSpace.getId().equals(newSpaceStatus.getId())).findFirst().orElse(null);
             if (currentSpaceStatus == null) {
                 // log.warn("未注册的车位" + currentSpaceStatus.getId());
                 // TODO: 调试方便，暂时允许未注册的车位，后续需要处理
-                Arrays.asList(status.getParkingSpace()).add(newSpaceStatus);
+                status.getParkingSpace().add(newSpaceStatus);
                 continue;
             }
 
