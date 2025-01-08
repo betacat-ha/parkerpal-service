@@ -34,7 +34,7 @@
     system_parking_space.update_time as system_parking_space_update_time,
     system_parking_space.sensor_slot as system_parking_space_sensor_slot
   </sql>
-  <resultMap id="JoinResultMap" type="cn.com.betacat.parkerpal.iot.domain.SystemParkingSpace">
+  <resultMap id="JoinResultMap" type="cn.com.betacat.parkerpal.domain.entity.SystemParkingSpace">
     <!--@mbg.generated-->
     <id column="system_parking_space_id" property="id"/>
     <id column="system_parking_space_device_id" property="deviceId"/>
