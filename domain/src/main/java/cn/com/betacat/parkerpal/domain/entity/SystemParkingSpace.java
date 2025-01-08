@@ -22,7 +22,7 @@ public class SystemParkingSpace {
     /**
      * 所属的设备ID，0为未设置
      */
-    @TableId(value = "device_id", type = IdType.INPUT)
+    @TableField(value = "device_id")
     private String deviceId;
 
     /**
