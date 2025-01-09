@@ -1,6 +1,7 @@
 package cn.com.betacat.parkerpal.core.config;
 
-import cn.com.betacat.parkerpal.apicontracts.service.MqttService;
+import cn.com.betacat.parkerpal.apicontracts.service.IotDeviceService;
+import cn.com.betacat.parkerpal.domain.entity.IotDevice;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -118,12 +119,12 @@ public class MqttConfig {
     @Bean
     // ServiceActivator注解表明：当前方法用于处理MQTT消息，inputChannel参数指定了用于消费消息的channel。
     @ServiceActivator(inputChannel = CHANNEL_NAME_IN)
-    public MessageHandler handler(MqttService mqttService) {
+    public MessageHandler handler(IotDeviceService iotDeviceService) {
         return message -> {
             String payload = message.getPayload().toString();
             // byte[] bytes = (byte[]) message.getPayload(); // 收到的消息是字节格式
             String topic = message.getHeaders().get("mqtt_receivedTopic").toString();
-            mqttService.handleMessage(topic, payload);
+            iotDeviceService.handleMessage(topic, payload);
         };
     }
  

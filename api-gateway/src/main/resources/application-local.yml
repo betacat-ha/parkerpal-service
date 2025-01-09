@@ -57,7 +57,8 @@ mqtt:
     default: /parkerpal/#
     subscribe: /parkerpal
     space-sensor:
-      prefix : /parkerpal
+      subPrefix : /Sensor-Sub-
+      pubPrefix : /Sensor-Pub-
   # QoS
   qos: 1
 
