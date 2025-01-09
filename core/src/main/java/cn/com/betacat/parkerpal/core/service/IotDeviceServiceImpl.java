@@ -1,6 +1,7 @@
 package cn.com.betacat.parkerpal.core.service;
 
 import cn.com.betacat.parkerpal.apicontracts.mapper.IotDeviceMapper;
+import cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper;
 import cn.com.betacat.parkerpal.apicontracts.service.IotDeviceService;
 import cn.com.betacat.parkerpal.apicontracts.service.MqttService;
 import cn.com.betacat.parkerpal.common.constants.IotConstant;
@@ -8,10 +9,9 @@ import cn.com.betacat.parkerpal.common.constants.RedisMessageConstant;
 import cn.com.betacat.parkerpal.common.utils.RedisUtil;
 import cn.com.betacat.parkerpal.domain.entity.IotDevice;
 import cn.com.betacat.parkerpal.domain.entity.IotDeviceStatus;
-import cn.com.betacat.parkerpal.domain.entity.ParkingSpace;
+import cn.com.betacat.parkerpal.domain.entity.SystemParkingSpace;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +24,9 @@ public class IotDeviceServiceImpl extends
 
     @Autowired
     private MqttService mqttService;
+
+    @Autowired
+    private SystemParkingSpaceMapper systemParkingSpaceMapper;
 
     @Value("${mqtt.topic.subscribe}")
     private String subscribedTopic;
@@ -53,14 +56,14 @@ public class IotDeviceServiceImpl extends
             return;
         }
 
-        for (ParkingSpace newSpaceStatus : deviceStatus.getParkingSpace()) {
+        for (SystemParkingSpace newSpaceStatus : deviceStatus.getParkingSpaces()) {
             // 找到对应的车位
 
-            ParkingSpace currentSpaceStatus = deviceStatus.getParkingSpace().stream().filter(parkingSpace -> parkingSpace.getId().equals(newSpaceStatus.getId())).findFirst().orElse(null);
+            SystemParkingSpace currentSpaceStatus = deviceStatus.getParkingSpaces().stream().filter(parkingSpace -> parkingSpace.getId().equals(newSpaceStatus.getId())).findFirst().orElse(null);
             if (currentSpaceStatus == null) {
                 // log.warn("未注册的车位" + currentSpaceStatus.getId());
                 // TODO: 调试方便，暂时允许未注册的车位，后续需要处理
-                status.getParkingSpace().add(newSpaceStatus);
+                status.getParkingSpaces().add(newSpaceStatus);
                 continue;
             }
 
@@ -80,7 +83,7 @@ public class IotDeviceServiceImpl extends
      */
     @Override
     public void sendConfig(String macAddress) {
-        IotDevice iotDevice = this.baseMapper.getByMacAddress(macAddress);
+        IotDevice iotDevice = this.baseMapper.selectByMacAddressWithSpaces(macAddress);
         if (iotDevice == null) {
             log.warn("设备配置下发失败，设备不存在：" + macAddress);
             sendErrorToSpaceSensor(macAddress, IotConstant.MESSAGE_CODE_NOT_FOUND, IotConstant.MESSAGE_DETAIL_CONFIGURATION_MAC_ADDRESS_NOT_FOUND);

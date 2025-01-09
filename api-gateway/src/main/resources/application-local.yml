@@ -6,9 +6,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://117.72.75.41:3306/smart_parking?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3308/parkerpal?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
     username: root
-    password: mysql_b5YQEa
+    password: root
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

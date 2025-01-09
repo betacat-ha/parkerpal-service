@@ -72,4 +72,10 @@ public class SystemParkingSpace {
      */
     @TableField(value = "sensor_slot")
     private String sensorSlot;
+
+    /**
+     * 是否被占用
+     */
+    @TableField(exist = false)
+    private boolean isOccupied;
 }

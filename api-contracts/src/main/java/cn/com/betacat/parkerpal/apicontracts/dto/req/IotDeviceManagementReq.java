@@ -35,4 +35,14 @@ public class IotDeviceManagementReq implements Serializable {
         private String content;
         //@formatter:on
     }
+
+    @Getter
+    @Setter
+    @ApiModel(value = "IotDeviceManagementResp.SendConfigToDevice", description = "发送-配置至设备")
+    public static class SendConfigToDevice implements Serializable {
+        private static final long serialVersionUID = -43355946137091835L;
+        //@formatter:off
+        private String macAddress;
+        //@formatter:on
+    }
 }

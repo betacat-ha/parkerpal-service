@@ -1,6 +1,7 @@
 package cn.com.betacat.parkerpal.apigateway.http;
 
 import cn.com.betacat.parkerpal.apicontracts.dto.req.IotDeviceManagementReq;
+import cn.com.betacat.parkerpal.apicontracts.service.IotDeviceService;
 import cn.com.betacat.parkerpal.apicontracts.service.MqttService;
 import cn.com.betacat.parkerpal.common.annotation.PassToken;
 import cn.com.betacat.parkerpal.domain.base.ResResult;
@@ -22,6 +23,9 @@ public class IotEndpoint {
     @Autowired
     private MqttService mqttService;
 
+    @Autowired
+    private IotDeviceService iotDeviceService;
+
     @PassToken(required = false)
     @ApiOperation(value = "IOT - 发送消息")
     @PostMapping(value = "/send", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -30,5 +34,12 @@ public class IotEndpoint {
         return ResResult.success();
     }
 
+    @PassToken(required = false)
+    @ApiOperation(value = "IOT - 发送配置到设备")
+    @PostMapping(value = "/sendConfig", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResResult sendConfig(@RequestBody IotDeviceManagementReq.SendConfigToDevice dto) {
+        iotDeviceService.sendConfig(dto.getMacAddress());
+        return ResResult.success();
+    }
 
 }

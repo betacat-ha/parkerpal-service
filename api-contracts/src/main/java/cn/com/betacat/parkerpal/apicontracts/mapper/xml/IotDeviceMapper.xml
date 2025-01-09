@@ -51,16 +51,15 @@
     <result column="iot_device_is_disabled" property="isDisabled"/>
     <result column="iot_device_is_deleted" property="isDeleted"/>
   </resultMap>
-  <resultMap id="getByMacAddressWithSpaces" type="cn.com.betacat.parkerpal.domain.entity.IotDevice" extends="JoinResultMap">
-    <association property="parkingSpace" javaType="java.util.List" resultMap="cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper.JoinResultMap" />
+  <resultMap id="selectByMacAddressWithSpaces" type="cn.com.betacat.parkerpal.domain.entity.IotDevice" extends="JoinResultMap">
+    <collection property="parkingSpaces" javaType="java.util.List" resultMap="cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper.JoinResultMap" />
   </resultMap>
 
-  <select id="getByMacAddressWithSpaces" resultMap="getByMacAddressWithSpaces">
+  <select id="selectByMacAddressWithSpaces" resultMap="selectByMacAddressWithSpaces">
     <!--@mbg.generated-->
     select
     <include refid="Join_Column_List"/>,
-    <include refid="cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper.Join_Column_List">
-    </include>
+    <include refid="cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper.Join_Column_List" />
     from iot_device join system_parking_space on iot_device.id = system_parking_space.device_id
     where mac_address = #{macAddress}
   </select>

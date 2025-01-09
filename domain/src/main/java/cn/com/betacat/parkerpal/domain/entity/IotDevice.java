@@ -82,5 +82,5 @@ public class IotDevice {
     private Byte isDeleted;
 
     @TableField(exist = false)
-    private List<ParkingSpace> parkingSpace;
+    private List<SystemParkingSpace> parkingSpaces;
 }
