@@ -190,13 +190,16 @@ public class IotDeviceServiceImpl extends
             // 处理消息
             switch (jsonObject.getString(IotConstant.JSON_KEY_TYPE)) {
                 case IotConstant.MESSAGE_TYPE_SPACE_STATUS -> {
-                    // 处理设备状态
+                    // 处理单个车位状态
                     SystemParkingSpace[] parkingSpaceArr = new SystemParkingSpace[]{jsonObject.toJavaObject(SystemParkingSpace.class)};
                     List<SystemParkingSpace> parkingSpaces = List.of(parkingSpaceArr);
-                    IotDeviceStatus deviceStatus = new IotDeviceStatus();
-                    deviceStatus.setParkingSpaces(parkingSpaces);
-                    deviceStatus.setId(jsonObject.getString(IotConstant.JSON_KEY_DEVICE_ID));
-                    deviceStatus.setMacAddress(jsonObject.getString(IotConstant.JSON_KEY_MAC_ADDRESS));
+                    IotDeviceStatus deviceStatus = new IotDeviceStatus(jsonObject.getString(IotConstant.JSON_KEY_DEVICE_ID), parkingSpaces);
+                    updateSpaceOccupiedStatus(deviceStatus);
+                }
+                case IotConstant.MESSAGE_TYPE_SPACE_STATUS_LIST -> {
+                    // 处理多个车位状态
+                    List<SystemParkingSpace> parkingSpaces = jsonObject.getJSONArray(IotConstant.JSON_KEY_PARKING_SPACES).toJavaList(SystemParkingSpace.class);
+                    IotDeviceStatus deviceStatus = new IotDeviceStatus(jsonObject.getString(IotConstant.JSON_KEY_DEVICE_ID), parkingSpaces);
                     updateSpaceOccupiedStatus(deviceStatus);
                 }
                 case IotConstant.MESSAGE_TYPE_WIFI_LIST -> {
@@ -220,5 +223,4 @@ public class IotDeviceServiceImpl extends
             log.debug("丢弃消息：主题[" + topic + "]，负载：" + payload);
         }
     }
-
 }

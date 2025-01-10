@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class IotConstant {
     public static final String MESSAGE_TYPE_SPACE_STATUS = "space_status";
+    public static final String MESSAGE_TYPE_SPACE_STATUS_LIST = "space_status_list";
     public static final String MESSAGE_TYPE_DEVICE_CONTROL = "device_control";
     public static final String MESSAGE_TYPE_WIFI_LIST = "Wi-Fi";
     public static final String MESSAGE_TYPE_CONFIGURATION_REQUEST = "configuration_request";
@@ -37,6 +38,7 @@ public class IotConstant {
     public static final String JSON_KEY_OPERATION = "operation";
     public static final String JSON_KEY_DEVICE_ID = "deviceId";
     public static final String JSON_KEY_MAC_ADDRESS = "deviceMacAddress";
+    public static final String JSON_KEY_PARKING_SPACES = "parkingSpaces";
     public static final String JSON_KEY_SPACE_ID = "spaceId";
 
     // 错误信息合集

@@ -78,4 +78,10 @@ public class SystemParkingSpace {
      */
     @TableField(exist = false)
     private boolean isOccupied;
+
+    /**
+     * 激光传感器距离
+     */
+    @TableField(exist = false)
+    private Double distance;
 }
