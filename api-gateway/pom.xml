@@ -49,16 +49,7 @@
 
     <resources>
       <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>../api-gateway/src/main/resources</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
   </build>

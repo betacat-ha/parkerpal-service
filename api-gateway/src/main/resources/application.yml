@@ -33,7 +33,7 @@ spring:
 
 #mybatis-plus
 mybatis-plus:
-  mapper-locations: classpath*:cn/com/betacat/parkerpal/apicontracts/mapper/xml/*Mapper.xml
+  mapper-locations: classpath:/cn/com/betacat/parkerpal/apicontracts/mapper/xml/*.xml
   global-config:
     # 关闭MP3.0自带的banner
     banner: false

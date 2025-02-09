@@ -29,4 +29,16 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <!-- 确保xml文件被包含在最终的构建产物中 -->
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/mapper/xml/*.xml</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
 </project>
