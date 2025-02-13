@@ -7,9 +7,14 @@ import cn.com.betacat.parkerpal.common.constants.IotConstant;
 import cn.com.betacat.parkerpal.common.constants.RedisMessageConstant;
 import cn.com.betacat.parkerpal.common.utils.RedisUtil;
 import cn.com.betacat.parkerpal.core.config.MqttGateway;
+import cn.com.betacat.parkerpal.core.exception.BizException;
+import cn.com.betacat.parkerpal.domain.base.PageInfoRespQuery;
+import cn.com.betacat.parkerpal.domain.base.PageInfoUtil;
 import cn.com.betacat.parkerpal.domain.entity.IotDevice;
 import cn.com.betacat.parkerpal.domain.entity.IotDeviceStatus;
 import cn.com.betacat.parkerpal.domain.entity.SystemParkingSpace;
+import cn.com.betacat.parkerpal.domain.enums.RespEnum;
+import cn.com.betacat.parkerpal.domain.query.IotDeviceQuery;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -18,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -123,13 +130,149 @@ public class IotDeviceServiceImpl extends
         sendSuccessToSpaceSensor(macAddress, deviceConfig.toJSONString());
     }
 
-
+    /**
+     * 从REDIS获取设备状态
+     *
+     * @param deviceId 设备ID
+     * @return 设备状态
+     */
     @Override
     public IotDeviceStatus getIotStatus(String deviceId) {
         Object status = RedisUtil.get(deviceId + RedisMessageConstant.IOT_DEVICE_STATUS);
         return status == null ? null : JSON.parseObject((String) status, IotDeviceStatus.class);
     }
 
+    /**
+     * 从REDIS获取设备状态列表
+     *
+     * @param deviceId 设备ID列表
+     * @return 设备状态列表
+     */
+    @Override
+    public List<IotDeviceStatus> getIotStatusList(List<String> deviceId) {
+        return deviceId.stream().map(this::getIotStatus).toList();
+    }
+
+    /**
+     * 从持久化存储获取设备信息
+     *
+     * @param deviceId 设备ID
+     * @return 设备状态
+     */
+    @Override
+    public IotDevice getIotDevice(String deviceId) {
+        return this.baseMapper.selectByMacAddressWithSpaces(deviceId);
+    }
+
+    /**
+     * 从持久化存储获取设备列表
+     *
+     * @param query 查询条件
+     * @return 分页数据
+     */
+    @Override
+    public PageInfoRespQuery getPageList(IotDeviceQuery query) {
+        // 赋值页码
+        PageInfoUtil.pageReq(query);
+        // 统计总数
+        Long total = this.baseMapper.countTotal(query);
+        // 查询列表
+        List<IotDevice> list = this.baseMapper.getAllWithPage(query);
+        // 返回分页数据
+        return PageInfoUtil.pageResp(list, query, total);
+    }
+
+    /**
+     * 新增设备
+     *
+     * @param newDevice 设备信息
+     * @return 新的设备信息
+     */
+    public IotDevice addDevice(IotDevice newDevice) {
+        // 根据MAC地址查询设备
+        IotDevice deviceFromDataBase = this.baseMapper.selectByMacAddress(newDevice.getMacAddress());
+        // 判断设备是否存在
+        if (deviceFromDataBase != null) throw new BizException(RespEnum.FAILURE.getCode(), "设备已存在");
+
+        // 设置状态
+        newDevice.setIsDeleted(Byte.valueOf("0"));
+        Date currentTime = new Date();
+        newDevice.setCreateTime(currentTime);
+        newDevice.setUpdateTime(currentTime);
+
+        this.save(newDevice);
+        return this.baseMapper.selectByMacAddress(newDevice.getMacAddress());
+    }
+
+    /**
+     * 更新设备信息
+     *
+     * @param editedDevice 设备信息
+     * @return 更新后的设备信息
+     */
+    public IotDevice updateDevice(IotDevice editedDevice) {
+        // 根据MAC地址查询设备
+        IotDevice deviceFromDataBase = this.baseMapper.selectByMacAddress(editedDevice.getMacAddress());
+        // 判断设备是否存在
+        if (deviceFromDataBase == null) throw new BizException(RespEnum.FAILURE.getCode(), "设备不存在");
+
+        // 设置状态
+        editedDevice.setUpdateTime(new Date());
+
+        this.updateById(editedDevice);
+        return this.baseMapper.selectByMacAddress(editedDevice.getMacAddress());
+    }
+
+    /**
+     * 删除设备
+     *
+     * @param deviceIds 设备ID列表
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteDevice(List<String> deviceIds) {
+        for (String deviceId : deviceIds) {
+           deleteDevice(deviceId);
+        }
+    }
+
+    /**
+     * 删除设备
+     *
+     * @param deviceId 设备ID
+     */
+    public void deleteDevice(String deviceId) {
+        // 根据ID查询设备
+        IotDevice deviceFromDataBase = this.baseMapper.selectById(deviceId);
+        // 判断设备是否存在
+        if (deviceFromDataBase == null) throw new BizException(RespEnum.FAILURE.getCode(), "设备不存在");
+
+        this.removeById(deviceId);
+    }
+
+    /**
+     * 新增或编辑设备
+     *
+     * @param device 设备信息
+     * @return 新的设备信息
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public IotDevice addOrUpdateDevice(IotDevice device) {
+        // TODO: 此处应不允许关联车位，后续需要处理
+        device.setUpdateTime(new Date());
+        if (device.getId() == null) {
+            return addDevice(device);
+        } else {
+            return updateDevice(device);
+        }
+    }
+
+    /**
+     * 发送消息到指定设备
+     * @param macAddress 设备MAC地址
+     * @param payload 消息内容
+     */
     public void sendToSpaceSensor(String macAddress, String payload) {
         // 发送消息到指定设备
         sendToMqtt(subscribedTopic + spaceSensorPrefix + macAddress, 1, payload);
