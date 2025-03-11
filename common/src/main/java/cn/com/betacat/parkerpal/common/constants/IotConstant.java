@@ -39,6 +39,7 @@ public class IotConstant {
     public static final String JSON_KEY_DEVICE_ID = "deviceId";
     public static final String JSON_KEY_MAC_ADDRESS = "deviceMacAddress";
     public static final String JSON_KEY_PARKING_SPACES = "parkingSpaces";
+    public static final String JSON_KEY_RSSI_LIST = "rssiList";
     public static final String JSON_KEY_SPACE_ID = "spaceId";
 
     // 错误信息合集

@@ -84,4 +84,12 @@ public class SystemParkingSpace {
      */
     @TableField(exist = false)
     private Double distance;
+
+    /**
+     * 备注
+     */
+    @TableField(value = "comment")
+    private String comment;
+
+
 }

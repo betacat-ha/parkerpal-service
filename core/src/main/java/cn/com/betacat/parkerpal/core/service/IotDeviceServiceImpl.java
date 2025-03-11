@@ -10,15 +10,14 @@ import cn.com.betacat.parkerpal.core.config.MqttGateway;
 import cn.com.betacat.parkerpal.core.exception.BizException;
 import cn.com.betacat.parkerpal.domain.base.PageInfoRespQuery;
 import cn.com.betacat.parkerpal.domain.base.PageInfoUtil;
-import cn.com.betacat.parkerpal.domain.entity.IotDevice;
-import cn.com.betacat.parkerpal.domain.entity.IotDeviceStatus;
-import cn.com.betacat.parkerpal.domain.entity.SystemParkingSpace;
+import cn.com.betacat.parkerpal.domain.entity.*;
 import cn.com.betacat.parkerpal.domain.enums.RespEnum;
 import cn.com.betacat.parkerpal.domain.query.IotDeviceQuery;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.velocity.runtime.directive.Foreach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -52,6 +51,67 @@ public class IotDeviceServiceImpl extends
     public void setDeviceStatus(IotDeviceStatus deviceStatus) {
         String deviceStatusStr = JSONObject.toJSONString(deviceStatus);
         RedisUtil.set(deviceStatus.getId() + RedisMessageConstant.IOT_DEVICE_STATUS, deviceStatusStr);
+    }
+
+    /**
+     * 缓存Wi-Fi信号列表
+     *
+     * @param sensorData 传感器数据
+     */
+    public void updateWifiList(SensorData sensorData) {
+        /* 传感器数据格式
+         * {
+         *  "macAddress": "00:00:00:00:00:00", // 传感器MAC地址
+         * "rssiList": [{
+         *   "sourceMacAddress": "00:00:00:00:00:00",
+         *   "sensorMacAddress": null,
+         *   "rssi": -50,
+         *   "timestamp": 1631577600000
+         * }]
+         * }
+         */
+        List<RssiRecord> rssiList = sensorData.getRssiList();
+        if (rssiList == null) {
+            return;
+        }
+
+        String sensorMacAddress = sensorData.getMacAddress();
+
+        for (RssiRecord rssiRecord : rssiList) {
+            String sourceMacAddress = rssiRecord.getSourceMacAddress();
+            Object obj = RedisUtil.get(sourceMacAddress + RedisMessageConstant.IOT_DEVICE_WIFI_RSSI);
+            SignalSource signalSource = obj == null ? new SignalSource(sourceMacAddress) : JSON.parseObject((String) obj, SignalSource.class);
+            List<RssiRecord> currentRssiList = signalSource.getRssiRecords();
+
+            // 如果列表不存在，创建新的列表
+            if (currentRssiList == null) {
+                currentRssiList = List.of(rssiRecord);
+            }
+
+            // 检查记录是否存在
+            RssiRecord currentRecord = currentRssiList.stream().filter(record -> record.getSensorMacAddress().equals(rssiRecord.getSensorMacAddress())).findFirst().orElse(null);
+
+            // 减少冗余
+            rssiRecord.setSourceMacAddress(null);
+
+            // 设置记录
+            rssiRecord.setSensorMacAddress(sensorMacAddress);
+
+            // 如果记录不存在，添加新的记录
+            if (currentRecord == null) {
+                currentRssiList.add(rssiRecord);
+            } else {
+                // 如果记录存在，更新记录
+                currentRecord.setRssi(rssiRecord.getRssi());
+                currentRecord.setTimestamp(rssiRecord.getTimestamp());
+            }
+
+            // 更新列表
+            signalSource.setRssiRecords(currentRssiList);
+
+            // 更新缓存
+            RedisUtil.set(sourceMacAddress + RedisMessageConstant.IOT_DEVICE_WIFI_RSSI, JSON.toJSONString(signalSource));
+        }
     }
 
 
@@ -232,7 +292,7 @@ public class IotDeviceServiceImpl extends
     @Transactional(rollbackFor = Exception.class)
     public void deleteDevice(List<String> deviceIds) {
         for (String deviceId : deviceIds) {
-           deleteDevice(deviceId);
+            deleteDevice(deviceId);
         }
     }
 
@@ -270,8 +330,9 @@ public class IotDeviceServiceImpl extends
 
     /**
      * 发送消息到指定设备
+     *
      * @param macAddress 设备MAC地址
-     * @param payload 消息内容
+     * @param payload    消息内容
      */
     public void sendToSpaceSensor(String macAddress, String payload) {
         // 发送消息到指定设备
@@ -346,8 +407,12 @@ public class IotDeviceServiceImpl extends
                     updateSpaceOccupiedStatus(deviceStatus);
                 }
                 case IotConstant.MESSAGE_TYPE_WIFI_LIST -> {
-                    // 处理Wi-Fi列表
-
+                    // 处理Wi-Fi信号列表
+                    List<RssiRecord> rssiList = jsonObject.getJSONArray(IotConstant.JSON_KEY_RSSI_LIST).toJavaList(RssiRecord.class);
+                    SensorData sensorData = new SensorData();
+                    sensorData.setMacAddress(jsonObject.getString(deviceId));
+                    sensorData.setRssiList(rssiList);
+                    updateWifiList(sensorData);
                 }
                 case IotConstant.MESSAGE_TYPE_CONFIGURATION_REQUEST -> {
                     // 从负载中获取mac地址
