@@ -2,9 +2,11 @@ package cn.com.betacat.parkerpal.apigateway.http;
 
 import cn.com.betacat.parkerpal.apicontracts.dto.req.IotDeviceManagementReq;
 import cn.com.betacat.parkerpal.apicontracts.service.IotDeviceService;
+import cn.com.betacat.parkerpal.apicontracts.service.SystemParkingSpaceService;
 import cn.com.betacat.parkerpal.common.annotation.PassToken;
 import cn.com.betacat.parkerpal.domain.base.ResResult;
 import cn.com.betacat.parkerpal.domain.entity.IotDevice;
+import cn.com.betacat.parkerpal.domain.entity.SystemParkingSpace;
 import cn.com.betacat.parkerpal.domain.enums.RespEnum;
 import cn.com.betacat.parkerpal.domain.query.IotDeviceQuery;
 import io.swagger.annotations.Api;
@@ -26,6 +28,9 @@ import java.util.List;
 public class IotEndpoint {
     @Autowired
     private IotDeviceService iotDeviceService;
+
+    @Autowired
+    private SystemParkingSpaceService systemParkingSpaceService;
 
     @PassToken(required = false)
     @ApiOperation(value = "IOT - 发送消息")
@@ -77,6 +82,19 @@ public class IotEndpoint {
         }
         return ResResult.success();
     }
+
+    @PassToken(required = false)
+    @ApiOperation(value = "IOT - 获取停车位状态信息")
+    @PostMapping(value = "/getParkingSpaceStatus", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResResult<?> getParkingSpaceStatus(@RequestBody SystemParkingSpace dto) {
+        try {
+            return ResResult.success(systemParkingSpaceService.selectAll(dto));
+        } catch (Exception e) {
+            log.error("获取停车位状态信息失败", e);
+            return ResResult.error(RespEnum.FAILURE.getCode(), "获取停车位状态信息失败，请刷新页面重试");
+        }
+    }
+
 
 
     // @PassToken(required = false)

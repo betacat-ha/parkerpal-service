@@ -91,5 +91,16 @@ public class SystemParkingSpace {
     @TableField(value = "comment")
     private String comment;
 
+    /**
+     * 3D室内地图楼层编码
+     */
+    @TableField(value = "fnum")
+    private String fnum;
+
+    /**
+     * 3D室内地图模型名称
+     */
+    @TableField(value = "model_name")
+    private String modelName;
 
 }

@@ -11,4 +11,8 @@ public interface SystemParkingSpaceMapper extends BaseMapper<SystemParkingSpace>
     List<SystemParkingSpace> selectByDeviceId(@Param("deviceId")String deviceId);
 
 	int insertList(@Param("list")List<SystemParkingSpace> list);
+
+    List<SystemParkingSpace> selectAll(@Param("query")SystemParkingSpace query);
+
+
 }
