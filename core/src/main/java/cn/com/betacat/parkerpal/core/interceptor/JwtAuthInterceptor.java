@@ -55,7 +55,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private void loginInspect(String token, boolean verifyPermissions, String authority) {
+    public void loginInspect(String token, boolean verifyPermissions, String authority) {
         // 从token中获取用户名
         String account = JwtUtil.getAccount(token);
 

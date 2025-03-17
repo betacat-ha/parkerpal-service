@@ -24,6 +24,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -41,11 +43,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class WebSocketServer {
 
-    private static JwtAuthInterceptor jwtAuthInterceptor;
+    /**
+     * 注入ApplicationEventPublisher
+     * @param publisher
+     */
+    private static ApplicationEventPublisher eventPublisher;
 
-    // 通过 Spring 依赖注入 JwtAuthInterceptor
-    public static void setJwtAuthInterceptor(JwtAuthInterceptor interceptor) {
-        jwtAuthInterceptor = interceptor;
+
+    @Autowired
+    public void setEventPublisher(ApplicationEventPublisher publisher) {
+        WebSocketServer.eventPublisher = publisher;
     }
 
     /**
@@ -82,9 +89,6 @@ public class WebSocketServer {
             log.error("无法获取token，鉴权失败");
             return;
         }
-
-
-
 
 
         if (webSocketMap.containsKey(userId)) {

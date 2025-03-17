@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cn.com.betacat.parkerpal.common.config;
+package cn.com.betacat.parkerpal.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
