@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cn.com.betacat.parkerpal.common.utils;
+package cn.com.betacat.parkerpal.common.utils.websocket;
 
 
 import com.alibaba.fastjson.JSON;
@@ -28,17 +28,25 @@ import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
+import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-@ServerEndpoint("/ws/{userId}")
+@ServerEndpoint(value = "/ws/{userId}", configurator = WebSocketConfigurator.class)
 @Api(tags = "WebSocketServer", value = "WebSocketServer")
 @Component
 @Slf4j
 public class WebSocketServer {
+
+    private static JwtAuthInterceptor jwtAuthInterceptor;
+
+    // 通过 Spring 依赖注入 JwtAuthInterceptor
+    public static void setJwtAuthInterceptor(JwtAuthInterceptor interceptor) {
+        jwtAuthInterceptor = interceptor;
+    }
 
     /**
      * 静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
@@ -61,9 +69,24 @@ public class WebSocketServer {
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("userId") String userId) {
+    public void onOpen(Session session, @PathParam("userId") String userId, EndpointConfig config) {
         this.session = session;
         this.userId = userId;
+
+        HandshakeRequest request = (HandshakeRequest) config.getUserProperties().get(HandshakeRequest.class.getName());
+        String token = null;
+
+        try {
+            token = request.getHeaders().get("Sec-WebSocket-Protocol").get(0);
+        } catch (Exception e) {
+            log.error("无法获取token，鉴权失败");
+            return;
+        }
+
+
+
+
+
         if (webSocketMap.containsKey(userId)) {
             webSocketMap.remove(userId);
             webSocketMap.put(userId, this);
