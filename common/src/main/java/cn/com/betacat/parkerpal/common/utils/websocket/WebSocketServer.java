@@ -17,11 +17,12 @@
 package cn.com.betacat.parkerpal.common.utils.websocket;
 
 
+import cn.com.betacat.parkerpal.common.utils.AuthorityType;
+import cn.com.betacat.parkerpal.common.utils.JwtUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,13 @@ public class WebSocketServer {
     private String userId = "";
 
     /**
+     * 过期时间
+     */
+    private long expireTime = 0;
+
+
+
+    /**
      * 连接建立成功调用的方法
      */
     @OnOpen
@@ -82,11 +90,36 @@ public class WebSocketServer {
 
         HandshakeRequest request = (HandshakeRequest) config.getUserProperties().get(HandshakeRequest.class.getName());
         String token = null;
+        boolean authPass = false;
 
         try {
             token = request.getHeaders().get("Sec-WebSocket-Protocol").get(0);
+
+            // 校验用户ID是否匹配
+            if (!JwtUtil.getAccount(token).equals(userId)) {
+                log.error("用户ID不匹配，用户：" + userId);
+                throw new Exception("用户ID不匹配");
+            }
+
+            // 鉴权
+            WebSocketAuthEvent event = new WebSocketAuthEvent(this, token, AuthorityType.READ);
+            eventPublisher.publishEvent(event);
+            authPass = event.isAuthorized();
+
+            // 获取token中的过期时间
+            expireTime = JwtUtil.getExpireTime(token);
+
         } catch (Exception e) {
-            log.error("无法获取token，鉴权失败");
+            log.error("鉴权失败，用户：" + userId);
+        }
+
+
+        if (!authPass || expireTime < System.currentTimeMillis()) {
+            try {
+                session.close();
+            } catch (IOException e) {
+                log.error("关闭连接失败，用户：" + userId);
+            }
             return;
         }
 
@@ -105,7 +138,7 @@ public class WebSocketServer {
         log.info("用户连接:" + userId + ",当前在线人数为:" + getOnlineCount());
 
         try {
-            sendMessage("连接成功");
+            sendMessage(WebSocketResult.success());
         } catch (IOException e) {
             log.error("用户:" + userId + ",网络异常!!!!!!");
         }

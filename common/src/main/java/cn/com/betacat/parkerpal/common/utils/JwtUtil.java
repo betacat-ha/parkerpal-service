@@ -69,4 +69,17 @@ public final class JwtUtil {
             return null;
         }
     }
+
+    /**
+     * 获取token中的过期时间
+     */
+    public static long getExpireTime(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getExpiresAt().getTime();
+        } catch (JWTDecodeException e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
 }
