@@ -25,28 +25,28 @@ public class WebSocketResult {
             this.message = message;
         }
     }
-    private Code code;
+    private String code;
     private String message;
     private Object data;
 
     public WebSocketResult(Code code) {
-        this.code = code;
+        this.code = String.valueOf(code.code);
         this.message = code.message;
     }
 
     public WebSocketResult(Code code, String message) {
-        this.code = code;
+        this.code = String.valueOf(code.code);
         this.message = message;
     }
 
     public WebSocketResult(Code code, Object data) {
-        this.code = code;
+        this.code = String.valueOf(code.code);
         this.message = code.message;
         this.data = data;
     }
 
     public WebSocketResult(Code code, String message, Object data) {
-        this.code = code;
+        this.code = String.valueOf(code.code);
         this.message = message;
         this.data = data;
     }
@@ -70,7 +70,6 @@ public class WebSocketResult {
 
 
     private String toJson() {
-
-        return "{\"code\":" + code.code + ",\"message\":\"" + message + "\"}";
+        return JSON.toJSONString(this);
     }
 }

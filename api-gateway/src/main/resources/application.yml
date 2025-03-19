@@ -53,7 +53,7 @@ mybatis-plus:
 # 全局参数
 global:
   # 是否开启token校验 true|开启  false｜关闭
-  token: false
+  token: true
   # 定义token的key名
   authorization: Authorization
   # 是否开启控制闸 true|开启  false｜关闭

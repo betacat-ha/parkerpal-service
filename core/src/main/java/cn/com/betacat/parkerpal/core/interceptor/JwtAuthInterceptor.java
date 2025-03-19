@@ -1,6 +1,7 @@
 package cn.com.betacat.parkerpal.core.interceptor;
 
 import cn.com.betacat.parkerpal.apicontracts.mapper.SystemUsersMapper;
+import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemUsersService;
 import cn.com.betacat.parkerpal.common.annotation.PassToken;
 import cn.com.betacat.parkerpal.common.utils.AuthorityType;
 import cn.com.betacat.parkerpal.common.utils.JwtUtil;
@@ -30,7 +31,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     private String authorization;
 
     @Autowired
-    private SystemUsersMapper sysUsersMapper;
+    private SystemUsersService systemUsersService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -60,7 +61,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         String account = JwtUtil.getAccount(token);
 
         // 根据账户查找用户信息
-        SystemUsers user = sysUsersMapper.getEntityByAccount(account);
+        SystemUsers user = systemUsersService.getEntityByAccountOrId(account);
         if (Objects.isNull(user))
             throw new BizException(RespEnum.FAILURE.getCode(), "用户不存在");
 

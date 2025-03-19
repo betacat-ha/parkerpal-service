@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
@@ -12,7 +15,11 @@ import lombok.Data;
     */
 @Data
 @TableName(value = "system_parking_space")
-public class SystemParkingSpace {
+public class SystemParkingSpace implements Serializable {
+    @Serial
+    @TableField(exist = false)
+    private static final long serialVersionUID = 2215423070276994378L;
+
     /**
      * ID
      */

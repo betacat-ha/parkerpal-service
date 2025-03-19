@@ -3,9 +3,14 @@ package cn.com.betacat.parkerpal.core.service;
 import cn.com.betacat.parkerpal.apicontracts.mapper.IotDeviceMapper;
 import cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper;
 import cn.com.betacat.parkerpal.apicontracts.service.IotDeviceService;
+import cn.com.betacat.parkerpal.apicontracts.service.SystemParkingSpaceService;
 import cn.com.betacat.parkerpal.common.constants.IotConstant;
 import cn.com.betacat.parkerpal.common.constants.RedisMessageConstant;
+import cn.com.betacat.parkerpal.common.constants.SystemConstant;
+import cn.com.betacat.parkerpal.common.constants.WebSocketConstant;
 import cn.com.betacat.parkerpal.common.utils.RedisUtil;
+import cn.com.betacat.parkerpal.common.utils.websocket.WebSocketResult;
+import cn.com.betacat.parkerpal.common.utils.websocket.WebSocketServer;
 import cn.com.betacat.parkerpal.core.config.MqttGateway;
 import cn.com.betacat.parkerpal.core.exception.BizException;
 import cn.com.betacat.parkerpal.domain.base.PageInfoRespQuery;
@@ -20,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.runtime.directive.Foreach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +44,7 @@ public class IotDeviceServiceImpl extends
     private MqttGateway mqttGateway;
 
     @Autowired
-    private SystemParkingSpaceMapper systemParkingSpaceMapper;
+    private SystemParkingSpaceService systemParkingSpaceService;
 
     @Value("${mqtt.topic.subscribe}")
     private String subscribedTopic;
@@ -127,17 +133,14 @@ public class IotDeviceServiceImpl extends
 
         if (statusFromRedis == null) {
             setDeviceStatus(deviceStatus);
-            return;
         }
 
         for (SystemParkingSpace newSpaceStatus : deviceStatus.getParkingSpaces()) {
             // 找到对应的车位
 
-            SystemParkingSpace currentSpaceStatus = statusFromRedis.getParkingSpaces().stream().filter(parkingSpace -> parkingSpace.getId().equals(newSpaceStatus.getId())).findFirst().orElse(null);
+            SystemParkingSpace currentSpaceStatus = systemParkingSpaceService.selectBy(newSpaceStatus.getId());
             if (currentSpaceStatus == null) {
-                // log.warn("未注册的车位" + currentSpaceStatus.getId());
-                // TODO: 调试方便，暂时允许未注册的车位，后续需要处理
-                statusFromRedis.getParkingSpaces().add(newSpaceStatus);
+                log.error("车位不存在：" + newSpaceStatus.getId());
                 continue;
             }
 
@@ -145,6 +148,15 @@ public class IotDeviceServiceImpl extends
             currentSpaceStatus.setOccupied(newSpaceStatus.isOccupied());
             // currentSpaceStatus.setParkedTime(newSpaceStatus.getParkedTime());
             // currentSpaceStatus.setLeftTime(newSpaceStatus.getLeftTime());
+            systemParkingSpaceService.updateBy(currentSpaceStatus);
+
+            // 推送状态给前端
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", currentSpaceStatus.getId());
+            jsonObject.put("status", currentSpaceStatus.isOccupied() ? SystemConstant.PARKING_SPACE_STATUS_OCCUPIED : SystemConstant.PARKING_SPACE_STATUS_FREE);
+            jsonObject.put("fnum", currentSpaceStatus.getFnum());
+            WebSocketServer.sendMessageByTopic(WebSocketResult.success(JSON.toJSONString(jsonObject)), WebSocketConstant.TOPIC_SPACE_STATUS);
+
         }
 
         setDeviceStatus(statusFromRedis);
@@ -220,6 +232,7 @@ public class IotDeviceServiceImpl extends
      * @return 设备状态
      */
     @Override
+    @Cacheable(value = "iotDevice", key = "#root.methodName")
     public IotDevice getIotDevice(String deviceId) {
         return this.baseMapper.selectByMacAddressWithSpaces(deviceId);
     }

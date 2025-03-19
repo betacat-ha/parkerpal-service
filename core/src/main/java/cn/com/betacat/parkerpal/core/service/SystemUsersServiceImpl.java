@@ -5,6 +5,7 @@ import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemRoleService;
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemUserRoleService;
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemUsersService;
 import cn.com.betacat.parkerpal.common.constants.AppConstants;
+import cn.com.betacat.parkerpal.common.constants.CacheManagerConstants;
 import cn.com.betacat.parkerpal.common.utils.JwtUtil;
 import cn.com.betacat.parkerpal.domain.entity.SystemRole;
 import cn.com.betacat.parkerpal.domain.entity.SystemUserRole;
@@ -23,6 +24,8 @@ import java.util.Objects;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +44,9 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
 
     @Autowired
     private SystemUserRoleService systemUserRoleService;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     /**
      * 系统管理-用户表-分页查询列表
@@ -67,6 +73,7 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
      * @return
      */
     @Override
+    @Cacheable(value = CacheManagerConstants.SYSTEM_USERS_BY_ACCOUNT_OR_ID, key = "#account", unless = "#result == null")
     public SystemUsers getEntityByAccountOrId(String account) {
         return this.baseMapper.getEntityByAccount(account);
     }
@@ -134,6 +141,7 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
         this.updateById(oldUser);
         // 生成token
         oldUser.setToken(JwtUtil.sign(oldUser.getAccount(), oldUser.getPassword()));
+        updateCache(oldUser);
         return oldUser;
     }
 
@@ -165,6 +173,7 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
         }
         // 生成token
         oldUser.setToken(JwtUtil.sign(oldUser.getAccount(), oldUser.getPassword()));
+        updateCache(oldUser);
         return oldUser;
     }
 
@@ -228,6 +237,7 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
      * @return
      */
     public SystemUsers updateUserAll(SystemUsers user) {
+        clearCache(user);
         // 根据ID获取用户信息
         SystemUsers openUser = this.baseMapper.getEntityByUserId(user.getId());
         if (Objects.isNull(openUser)) throw new BizException(RespEnum.FAILURE.getCode(), "用户不存在");
@@ -301,6 +311,9 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
         // 先删除角色
         systemUserRoleService.remove(new QueryWrapper<SystemUserRole>().in("user_id", ids));
         this.removeByIds(ids);
+
+        // TODO: 需要进一步优化
+        cacheManager.getCache(CacheManagerConstants.SYSTEM_USERS_BY_ACCOUNT_OR_ID).clear();
     }
 
     /**
@@ -324,6 +337,7 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
             user.setPassword(finalPassword);
         });
         this.updateBatchById(users);
+        updateCache(users);
     }
 
     /**
@@ -371,5 +385,33 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
     @Override
     public String getEntityId() {
         return this.baseMapper.getEntity() == null ? AppConstants.ADMIN_USER_ID : this.baseMapper.getEntity().getId();
+    }
+
+    /**
+     * 更新指定用户缓存
+     *
+     * @param user 用户信息
+     */
+    private void updateCache(SystemUsers user) {
+        // 更新缓存
+        cacheManager.getCache(CacheManagerConstants.SYSTEM_USERS_BY_ACCOUNT_OR_ID).put(user.getAccount(), user);
+        cacheManager.getCache(CacheManagerConstants.SYSTEM_USERS_BY_ACCOUNT_OR_ID).put(user.getId(), user);
+    }
+
+    /**
+     * 更新指定用户列表的缓存
+     * @param users 用户列表
+     */
+    private void updateCache(List<SystemUsers> users) {
+        users.forEach(this::updateCache);
+    }
+
+    /**
+     * 清除指定用户的缓存
+     * @param user 用户信息
+     */
+    private void clearCache(SystemUsers user) {
+        cacheManager.getCache(CacheManagerConstants.SYSTEM_USERS_BY_ACCOUNT_OR_ID).evict(user.getAccount());
+        cacheManager.getCache(CacheManagerConstants.SYSTEM_USERS_BY_ACCOUNT_OR_ID).evict(user.getId());
     }
 }

@@ -17,6 +17,7 @@
 package cn.com.betacat.parkerpal.common.utils.websocket;
 
 
+import cn.com.betacat.parkerpal.common.constants.WebSocketConstant;
 import cn.com.betacat.parkerpal.common.utils.AuthorityType;
 import cn.com.betacat.parkerpal.common.utils.JwtUtil;
 import com.alibaba.fastjson.JSON;
@@ -35,6 +36,7 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -68,6 +70,7 @@ public class WebSocketServer {
      * 与某个客户端的连接会话，需要通过它来给客户端发送数据
      */
     private Session session;
+
     /**
      * 接收userId
      */
@@ -77,6 +80,11 @@ public class WebSocketServer {
      * 过期时间
      */
     private long expireTime = 0;
+
+    /**
+     * 订阅主题
+     */
+    private String topic = WebSocketConstant.TOPIC_SPACE_STATUS;
 
 
 
@@ -96,7 +104,7 @@ public class WebSocketServer {
             token = request.getHeaders().get("Sec-WebSocket-Protocol").get(0);
 
             // 校验用户ID是否匹配
-            if (!JwtUtil.getAccount(token).equals(userId)) {
+            if (!Objects.equals(JwtUtil.getAccount(token), userId)) {
                 log.error("用户ID不匹配，用户：" + userId);
                 throw new Exception("用户ID不匹配");
             }
@@ -173,18 +181,10 @@ public class WebSocketServer {
                 JSONObject jsonObject = JSON.parseObject(message);
                 // 追加发送人(防止串改)
                 jsonObject.put("fromUserId", this.userId);
-                String toUserId = jsonObject.getString("toUserId");
-                // 传送给对应toUserId用户的websocket
-                if (StringUtils.isNotBlank(toUserId) && webSocketMap.containsKey(toUserId)) {
-                    webSocketMap.get(toUserId).sendMessage(jsonObject.toJSONString());
-                } else {
-                    log.error("请求的userId:" + toUserId + "不在该服务器上");
-                    // 否则不在这个服务器上，发送到mysql或者redis
-                }
             } catch (JSONException e) {
                 log.error("用户消息:" + userId + ",报文:" + message + "，无法解析为JSON");
             } catch (Exception e) {
-                log.error("用户消息:" + userId + ",报文:" + message + ",异常:" + e);
+                log.error("用户消息:" + userId + ",报文:" + message + "，异常:" + e);
             }
         }
     }
@@ -210,9 +210,11 @@ public class WebSocketServer {
 
 
     /**
-     * 发送自定义消息
+     * 发送消息给指定用户
+     * @param message 消息内容
+     * @param userId 用户ID
      */
-    public static void sendInfo(String message, @PathParam("userId") String userId) throws IOException {
+    public static void sendMessage(String message, @PathParam("userId") String userId) throws IOException {
         log.info("发送消息到:" + userId + "，报文:" + message);
         if (StringUtils.isNotBlank(userId) && webSocketMap.containsKey(userId)) {
             webSocketMap.get(userId).sendMessage(message);
@@ -222,14 +224,33 @@ public class WebSocketServer {
     }
 
     /**
-     * 群发自定义消息
+     * 群发消息给指定用户
      */
-    public static void sendInfo(String message, List<String> userId) throws IOException {
+    public static void sendMessage(String message, List<String> userId) throws IOException {
         log.info("群发消息:" + message + "，共" + userId.size() + "人");
         for (String id : userId) {
-            sendInfo(message, id);
+            sendMessage(message, id);
         }
         log.info("群发消息结束");
+    }
+
+
+    /**
+     * 发送消息
+     * @param message 消息内容
+     * @param topic 主题
+     */
+    public static void sendMessageByTopic(String message, String topic) {
+        log.info("开始向指定主题的用户发送消息");
+        webSocketMap.forEachValue(1, webSocketServer -> {
+            if (webSocketServer.topic.equals(topic)) {
+                try {
+                    webSocketServer.sendMessage(message);
+                } catch (IOException e) {
+                    log.error("发送消息失败：", e);
+                }
+            }
+        });
     }
 
     public static synchronized int getOnlineCount() {

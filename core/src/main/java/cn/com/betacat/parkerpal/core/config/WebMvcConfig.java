@@ -34,7 +34,8 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                         "/v2/**",
                         "/swagger-ui.html/**",
                         "/doc.html/**",
-                        "/favicon.ico/**"
+                        "/favicon.ico/**",
+                        "/spUser/logon"
                 });
     }
 
