@@ -353,17 +353,17 @@ public class IotDeviceServiceImpl extends
     }
 
     public void sendSuccessToSpaceSensor(String macAddress, String data) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(IotConstant.JSON_KEY_CODE, IotConstant.MESSAGE_CODE_SUCCESS);
-        jsonObject.put(IotConstant.JSON_KEY_DATA, data);
-        sendToSpaceSensor(macAddress, jsonObject.toJSONString());
+        JSONObject result = new JSONObject();
+        result.put(IotConstant.JSON_KEY_CODE, IotConstant.MESSAGE_CODE_SUCCESS);
+        result.put(IotConstant.JSON_KEY_DATA, JSONObject.parseObject(data));
+        sendToSpaceSensor(macAddress, result.toJSONString());
     }
 
     public void sendErrorToSpaceSensor(String macAddress, String data, String code, String message) {
         JSONObject result = new JSONObject();
         result.put(IotConstant.JSON_KEY_CODE, code);
         result.put(IotConstant.JSON_KEY_MESSAGE, message);
-        result.put(IotConstant.JSON_KEY_DATA, data);
+        result.put(IotConstant.JSON_KEY_DATA, JSONObject.parseObject(data));
 
         sendToSpaceSensor(macAddress, result.toJSONString());
     }
