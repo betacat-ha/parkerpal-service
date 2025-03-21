@@ -1,7 +1,6 @@
 package cn.com.betacat.parkerpal.core.service;
 
 import cn.com.betacat.parkerpal.apicontracts.mapper.IotDeviceMapper;
-import cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper;
 import cn.com.betacat.parkerpal.apicontracts.service.IotDeviceService;
 import cn.com.betacat.parkerpal.apicontracts.service.SystemParkingSpaceService;
 import cn.com.betacat.parkerpal.common.constants.IotConstant;
@@ -22,7 +21,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.velocity.runtime.directive.Foreach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -49,8 +47,13 @@ public class IotDeviceServiceImpl extends
     @Value("${mqtt.topic.subscribe}")
     private String subscribedTopic;
 
-    @Value("${mqtt.topic.space-sensor.subPrefix}")
-    private String spaceSensorPrefix;
+    // 设备发布消息的前缀
+    @Value("${mqtt.topic.sensor.pubPrefix}")
+    private String sensorPubPrefix;
+
+    // 设备订阅消息的前缀
+    @Value("${mqtt.topic.sensor.subPrefix}")
+    private String sensorSubPrefix;
 
 
     @Override
@@ -349,7 +352,7 @@ public class IotDeviceServiceImpl extends
      */
     public void sendToSpaceSensor(String macAddress, String payload) {
         // 发送消息到指定设备
-        sendToMqtt(subscribedTopic + spaceSensorPrefix + macAddress, 1, payload);
+        sendToMqtt(subscribedTopic + "/" + sensorSubPrefix + macAddress, 1, payload);
     }
 
     public void sendSuccessToSpaceSensor(String macAddress, String data) {
@@ -359,7 +362,7 @@ public class IotDeviceServiceImpl extends
         sendToSpaceSensor(macAddress, result.toJSONString());
     }
 
-    public void sendErrorToSpaceSensor(String macAddress, String data, String code, String message) {
+    public void sendErrorToSpaceSensor(String macAddress, String data, int code, String message) {
         JSONObject result = new JSONObject();
         result.put(IotConstant.JSON_KEY_CODE, code);
         result.put(IotConstant.JSON_KEY_MESSAGE, message);
@@ -368,11 +371,11 @@ public class IotDeviceServiceImpl extends
         sendToSpaceSensor(macAddress, result.toJSONString());
     }
 
-    public void sendErrorToSpaceSensor(String macAddress, String code) {
+    public void sendErrorToSpaceSensor(String macAddress, int code) {
         sendErrorToSpaceSensor(macAddress, null, code, IotConstant.MESSAGE_CODE_MAP.get(code));
     }
 
-    public void sendErrorToSpaceSensor(String macAddress, String code, String message) {
+    public void sendErrorToSpaceSensor(String macAddress, int code, String message) {
         sendErrorToSpaceSensor(macAddress, null, code, message);
     }
 
@@ -393,9 +396,14 @@ public class IotDeviceServiceImpl extends
                 log.warn("丢弃消息：主题[" + topic + "]，负载：" + payload);
                 return;
             }
-            deviceId = topic.split("/")[2];
-            log.info("获取设备编码为：" + deviceId + "，负载为：" + payload);
 
+            deviceId = topic.split("/")[2];
+            // 检测是否为订阅的主题
+            if (!deviceId.startsWith(sensorPubPrefix)) {
+                return;
+            }
+
+            log.info("获取设备编码为：" + deviceId + "，负载为：" + payload);
             // 处理接收到的消息
             jsonObject = JSON.parseObject(payload);
             if (jsonObject == null) {

@@ -16,7 +16,7 @@ public class IotConstant {
     public static final String MESSAGE_TYPE_HEAR = "online";
     public static final String MESSAGE_DETAIL_CONFIGURATION_MAC_ADDRESS_NOT_FOUND = "未找到该MAC地址的配置信息";
 
-    public static final String MESSAGE_CODE_SUCCESS = "200";
+    public static final int MESSAGE_CODE_SUCCESS = 200;
 
     public static final String MESSAGE_OPERATION_CONFIGURATION = "configuration";
     public static final String MESSAGE_OPERATION_REBOOT = "reboot";
@@ -29,8 +29,8 @@ public class IotConstant {
 
 
 
-    public static final String MESSAGE_CODE_ERROR_DEFAULT = "500";
-    public static final String MESSAGE_CODE_NOT_FOUND = "404";
+    public static final int MESSAGE_CODE_ERROR_DEFAULT = 500;
+    public static final int MESSAGE_CODE_NOT_FOUND = 404;
     public static final String JSON_KEY_TYPE = "type";
     public static final String JSON_KEY_CODE = "code";
     public static final String JSON_KEY_MESSAGE = "message";
@@ -43,7 +43,7 @@ public class IotConstant {
     public static final String JSON_KEY_SPACE_ID = "spaceId";
 
     // 错误信息合集
-    public static final Map<String, String> MESSAGE_CODE_MAP = new HashMap<String, String>() {{
+    public static final Map<Integer, String> MESSAGE_CODE_MAP = new HashMap<>() {{
         put(MESSAGE_CODE_ERROR_DEFAULT, "未知错误");
         put(MESSAGE_CODE_NOT_FOUND, "未找到");
     }};

@@ -56,9 +56,9 @@ mqtt:
   topic:
     default: /parkerpal/#
     subscribe: /parkerpal
-    space-sensor:
-      subPrefix : /Sensor-Sub-
-      pubPrefix : /Sensor-Pub-
+    sensor:
+      subPrefix : Sensor-Sub- # 设备监听前缀
+      pubPrefix : Sensor-Pub- # 设备发布前缀
   # QoS
   qos: 1
 
