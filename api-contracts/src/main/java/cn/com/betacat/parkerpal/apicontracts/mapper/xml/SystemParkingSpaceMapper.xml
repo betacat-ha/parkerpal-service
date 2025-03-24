@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper">
+  <resultMap id="BaseResultMap" type="cn.com.betacat.parkerpal.domain.entity.SystemParkingSpace">
+    <!--@mbg.generated-->
+    <!--@Table system_parking_space-->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <id column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="is_reserved" jdbcType="INTEGER" property="isReserved" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="sensor_slot" jdbcType="VARCHAR" property="sensorSlot" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="fnum" jdbcType="INTEGER" property="fnum" />
+    <result column="model_name" jdbcType="VARCHAR" property="modelName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, device_id, `name`, `type`, parent_id, is_reserved, `status`, create_time, update_time, 
+    sensor_slot, comment, fnum, model_name
+  </sql>
+
+  <sql id="Join_Column_List">
+    <!--@mbg.generated-->
+    system_parking_space.id as system_parking_space_id,
+    system_parking_space.device_id as system_parking_space_device_id,
+    system_parking_space.name as system_parking_space_name,
+    system_parking_space.type as system_parking_space_type,
+    system_parking_space.parent_id as system_parking_space_parent_id,
+    system_parking_space.is_reserved as system_parking_space_is_reserved,
+    system_parking_space.status as system_parking_space_status,
+    system_parking_space.create_time as system_parking_space_create_time,
+    system_parking_space.update_time as system_parking_space_update_time,
+    system_parking_space.sensor_slot as system_parking_space_sensor_slot,
+    system_parking_space.comment as system_parking_space_comment,
+    system_parking_space.fnum as system_parking_space_fnum,
+    system_parking_space.model_name as system_parking_space_model_name
+  </sql>
+
+  <sql id="selectQuery">
+    <where>
+      <if test="query.id != null">
+        <bind name="idlikevalue"
+              value="'%' + query.id + '%'"/>
+        and id like
+        #{idlikevalue}
+      </if><if test="query.deviceId != null">
+      <bind name="deviceIdlikevalue"
+            value="'%' + query.deviceId + '%'"/>
+      and device_id like
+      #{deviceIdlikevalue}
+    </if><if test="query.name != null">
+      <bind name="namelikevalue"
+            value="'%' + query.name + '%'"/>
+      and name like
+      #{namelikevalue}
+    </if><if test="query.type != null">
+      <bind name="typelikevalue"
+            value="'%' + query.type + '%'"/>
+      and type like
+      #{typelikevalue}
+    </if><if test="query.parentId != null">
+      <bind name="parentIdlikevalue"
+            value="'%' + query.parentId + '%'"/>
+      and parent_id like
+      #{parentIdlikevalue}
+    </if><if test="query.isReserved != null">
+      <bind name="isReservedlikevalue"
+            value="'%' + query.isReserved + '%'"/>
+      and is_reserved like
+      #{isReservedlikevalue}
+    </if><if test="query.status != null">
+      <bind name="statuslikevalue"
+            value="'%' + query.status + '%'"/>
+      and status like
+      #{statuslikevalue}
+    </if><if test="query.createTime != null">
+      <bind name="createTimelikevalue"
+            value="'%' + query.createTime + '%'"/>
+      and create_time like
+      #{createTimelikevalue}
+    </if><if test="query.updateTime != null">
+      <bind name="updateTimelikevalue"
+            value="'%' + query.updateTime + '%'"/>
+      and update_time like
+      #{updateTimelikevalue}
+    </if><if test="query.sensorSlot != null">
+      <bind name="sensorSlotlikevalue"
+            value="'%' + query.sensorSlot + '%'"/>
+      and sensor_slot like
+      #{sensorSlotlikevalue}
+    </if><if test="query.comment != null">
+      <bind name="commentlikevalue"
+            value="'%' + query.comment + '%'"/>
+      and comment like
+      #{commentlikevalue}
+    </if><if test="query.fnum != null">
+      <bind name="fnumlikevalue"
+            value="'%' + query.fnum + '%'"/>
+      and fnum like
+      #{fnumlikevalue}
+    </if><if test="query.modelName != null">
+      <bind name="modelNamelikevalue"
+            value="'%' + query.modelName + '%'"/>
+      and model_name like
+      #{modelNamelikevalue}
+    </if>
+    </where>
+  </sql>
+
+  <resultMap id="JoinResultMap" type="cn.com.betacat.parkerpal.domain.entity.SystemParkingSpace">
+    <!--@mbg.generated-->
+    <id column="system_parking_space_id" property="id"/>
+    <id column="system_parking_space_device_id" property="deviceId"/>
+    <result column="system_parking_space_name" property="name"/>
+    <result column="system_parking_space_type" property="type"/>
+    <result column="system_parking_space_parent_id" property="parentId"/>
+    <result column="system_parking_space_is_reserved" property="isReserved"/>
+    <result column="system_parking_space_status" property="status"/>
+    <result column="system_parking_space_create_time" property="createTime"/>
+    <result column="system_parking_space_update_time" property="updateTime"/>
+    <result column="system_parking_space_sensor_slot" property="sensorSlot"/>
+    <result column="system_parking_space_comment" property="comment"/>
+    <result column="system_parking_space_fnum" property="fnum"/>
+    <result column="system_parking_space_model_name" property="modelName"/>
+  </resultMap>
+
+<!--auto generated by MybatisCodeHelper on 2025-01-04-->
+  <select id="selectById" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from system_parking_space
+    where id=#{id,jdbcType=VARCHAR}
+  </select>
+
+<!--auto generated by MybatisCodeHelper on 2025-01-06-->
+  <select id="selectByDeviceId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from system_parking_space
+    where device_id=#{deviceId,jdbcType=VARCHAR}
+  </select>
+
+<!--auto generated by MybatisCodeHelper on 2025-01-06-->
+  <insert id="insertList">
+    INSERT INTO system_parking_space(
+    id,
+    device_id,
+    `name`,
+    `type`,
+    parent_id,
+    is_reserved,
+    `status`,
+    create_time,
+    update_time,
+    sensor_slot
+    )VALUES
+    <foreach collection="list" item="element" index="index" separator=",">
+      (
+      #{element.id,jdbcType=VARCHAR},
+      #{element.deviceId,jdbcType=VARCHAR},
+      #{element.name,jdbcType=VARCHAR},
+      #{element.type,jdbcType=VARCHAR},
+      #{element.parentId,jdbcType=INTEGER},
+      #{element.isReserved,jdbcType=INTEGER},
+      #{element.status,jdbcType=INTEGER},
+      #{element.createTime,jdbcType=TIMESTAMP},
+      #{element.updateTime,jdbcType=TIMESTAMP},
+      #{element.sensorSlot,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+<!--auto generated by MybatisCodeHelper on 2025-03-15-->
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from system_parking_space
+    <include refid="selectQuery" />
+  </select>
+</mapper>

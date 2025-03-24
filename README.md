@@ -1,9 +1,7 @@
 
 # 项目概述
 
-智泊无忧项目为前后端分离架构，本仓库为后端源码仓库。
-
-使用技术栈
+智泊无忧项目前后端分离架构，前端使用Vue3.0 + TypeScript + Element-Plus搭建，后端使用技术栈如下：
 
 | 技术名称       | 版本          | 用途描述                               |
 |--------------|-------------|------------------------------------|
@@ -13,7 +11,22 @@
 | MyBatis-Plus | 3.5.2       | 半ORM，简化CRUD操作                      |
 | MapStruct    | 1.5.5.Final | 代码生成器，用于简化不同对象模型之间的映射转换。 |
 
-前端使用Vue3.0 + TypeScript + Element-Plus搭建。
+
+**多模块划分**
+
+```shell
+├─.idea               # IDEA项目配置信息
+├─algorithm-wrapper   # 算法包装模块，即通过FFI调用更底层语言实现的算法，如Rust、C++
+├─api-contracts       # API规约模块，定义了所有对外暴露的服务接口规约。拓展性强，可以整合微服务等
+├─api-gateway         # API网关模块，对外API请求的入口点，项目的入口。
+├─common              # 公共模块
+├─core                # 核心模块，实现业务核心逻辑，以及存放于业务有关（如业务异常，Jwt拦截器等）
+├─domain              # 领域模型模块，包含实体类、枚举、全局异常等
+```
+
+- `common`下的`utils`应为基础工具类，不可继承，不应由`SpringBoot`管理
+- `xml`统一文件位于`api-contracts`下`mapper\xml`内，方便查找
+- `core`下`service\mixin`是更上层的业务逻辑混合（Mixin），提供扩展性和组合能力。这样可以减少表服务实现类依赖的`Bean`，消除循环依赖。
 
 ## 启动
 
@@ -23,7 +36,7 @@
 
 ## 部署
 
-部署文档存放在源码中，路径为：core/src/main/resources/doc
+部署文档存放在源码中，路径为：`resources\doc`
 
 Linux环境部署启动步骤：
 
@@ -48,8 +61,6 @@ dt.sh 脚本命令说明：
 建议使用：./dt.sh restart 
 
 命令查看运行日志命令：在jar包所在的目录中，输入：tail -f nohup.out
-
-
 
 ## 版本说明
 

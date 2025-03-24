@@ -1,7 +1,6 @@
 package cn.com.betacat.parkerpal.core.config;
 
 import cn.com.betacat.parkerpal.core.interceptor.JwtAuthInterceptor;
-
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +10,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-/**
- * @Author: Zoey
- * @Since: 2024-06-07 13:11:50
- * @Description:
- */
+
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
@@ -39,7 +34,8 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                         "/v2/**",
                         "/swagger-ui.html/**",
                         "/doc.html/**",
-                        "/favicon.ico/**"
+                        "/favicon.ico/**",
+                        "/spUser/logon"
                 });
     }
 

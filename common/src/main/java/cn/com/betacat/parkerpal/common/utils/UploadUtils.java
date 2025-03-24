@@ -1,12 +1,11 @@
 package cn.com.betacat.parkerpal.common.utils;
 
+
 import cn.com.betacat.parkerpal.common.constants.AppConstants;
-import cn.com.betacat.parkerpal.common.exception.BizException;
 import com.google.zxing.common.BitMatrix;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,12 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
-/**
- * @Author: Zoey
- * @Since: 2024-08-23 14:36:01
- * @Description:
- */
-public class UploadUtils {
+
+public final class UploadUtils {
 
     //私有不可更改的变量：生成二维码图片的颜色
     private static final int BLACK = 0xFF000000;
@@ -102,8 +97,8 @@ public class UploadUtils {
 
             return new ByteArrayInputStream(outputStream.toByteArray());
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new BizException("读取文件失败");
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 }

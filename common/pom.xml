@@ -49,6 +49,12 @@
     <google.zxing.version>3.3.0</google.zxing.version>
     <bouncycastle.version>1.62</bouncycastle.version>
     <jcraft.version>0.1.55</jcraft.version>
+
+    <!-- 微信支付 -->
+    <wxpay.version>0.4.9</wxpay.version>
+
+    <!-- MQTT -->
+
   </properties>
 
   <dependencies>
@@ -208,6 +214,10 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
     </dependency>
     <dependency>
@@ -263,6 +273,24 @@
       <artifactId>jsch</artifactId>
       <version>${jcraft.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.github.wechatpay-apiv3</groupId>
+      <artifactId>wechatpay-apache-httpclient</artifactId>
+      <version>${wxpay.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-mqtt</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus-boot-starter-test</artifactId>
+      <version>3.5.9</version>
+    </dependency>
+
   </dependencies>
 
 </project>

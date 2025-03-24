@@ -11,9 +11,11 @@
     <!--子工程-->
     <modules>
         <module>common</module>
-        <module>wxpay</module>
         <module>algorithm-wrapper</module>
+        <module>api-contracts</module>
         <module>core</module>
+        <module>api-gateway</module>
+        <module>domain</module>
     </modules>
 
     <!--版本管理-->
@@ -53,7 +55,7 @@
 
             <dependency>
                 <groupId>cn.com.betacat.parkerpal</groupId>
-                <artifactId>wxpay</artifactId>
+                <artifactId>core</artifactId>
                 <version>${revision}</version>
             </dependency>
 
@@ -65,7 +67,19 @@
 
             <dependency>
                 <groupId>cn.com.betacat.parkerpal</groupId>
-                <artifactId>core</artifactId>
+                <artifactId>domain</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.com.betacat.parkerpal</groupId>
+                <artifactId>api-contracts</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.com.betacat.parkerpal</groupId>
+                <artifactId>api-gateway</artifactId>
                 <version>${revision}</version>
             </dependency>
 

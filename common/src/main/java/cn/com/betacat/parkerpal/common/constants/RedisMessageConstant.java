@@ -1,0 +1,9 @@
+package cn.com.betacat.parkerpal.common.constants;
+
+public class RedisMessageConstant {
+    public static final String SENDTYPE_LOGIN = "_002"; // 用于缓存登录时发送的验证码
+    public static final String SENDTYPE_GETPWD = "_003"; // 用于缓存找回密码时发送的验证码
+    public static final String SENDTYPE_RESETPWD = "_004"; // 用于缓存重置密码时发送的验证码
+    public static final String IOT_DEVICE_STATUS = "_100"; // 用于缓存IOT设备状态
+    public static final String IOT_DEVICE_WIFI_RSSI = "_101"; // 用于缓存用户设备wifi信号强度
+}

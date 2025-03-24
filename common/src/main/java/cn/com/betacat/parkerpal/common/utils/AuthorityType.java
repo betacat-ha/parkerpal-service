@@ -1,12 +1,7 @@
 package cn.com.betacat.parkerpal.common.utils;
 
-/**
- * @Author: Zoey
- * @Date: 2023/7/12
- * @Time: 下午5:21
- * @Describe: 接口类型
- */
-public class AuthorityType {
+
+public final class AuthorityType {
 
     /**
      * 1|增加 2|修改

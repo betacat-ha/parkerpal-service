@@ -1,23 +1,15 @@
 package cn.com.betacat.parkerpal.common.utils;
 
-import cn.com.betacat.parkerpal.common.exception.BizException;
 import cn.hutool.core.util.IdUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import cn.com.betacat.parkerpal.common.enums.RespEnum;
-
 import java.util.Date;
 
-/**
- * @Author: Zoey
- * @Date: 2024/2/28
- * @Time: 上午11:17
- * @Describe:
- */
-public class JwtUtil {
+
+public final class JwtUtil {
 
     /**
      * 生成签名
@@ -53,18 +45,14 @@ public class JwtUtil {
      * @return 是否正确
      */
     public static boolean verify(String token, String account, String password) {
-        try {
-            //根据密码生成JWT效验器
-            Algorithm algorithm = Algorithm.HMAC256(password);
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withClaim("account", account)
-                    .build();
-            // 效验TOKEN
-            verifier.verify(token);
-            return true;
-        } catch (Exception e) {
-            throw new BizException(RespEnum.FAILURE.getCode(), "登录失效，请重新登录");
-        }
+        //根据密码生成JWT效验器
+        Algorithm algorithm = Algorithm.HMAC256(password);
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withClaim("account", account)
+                .build();
+        // 效验TOKEN
+        verifier.verify(token);
+        return true;
     }
 
     /**
@@ -77,7 +65,21 @@ public class JwtUtil {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("account").asString();
         } catch (JWTDecodeException e) {
+            System.out.println(e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * 获取token中的过期时间
+     */
+    public static long getExpireTime(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getExpiresAt().getTime();
+        } catch (JWTDecodeException e) {
+            System.out.println(e.getMessage());
+            return 0;
         }
     }
 }

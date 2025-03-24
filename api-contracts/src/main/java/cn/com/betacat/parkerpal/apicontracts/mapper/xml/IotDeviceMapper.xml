@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.betacat.parkerpal.apicontracts.mapper.IotDeviceMapper">
+    <resultMap id="BaseResultMap" type="cn.com.betacat.parkerpal.domain.entity.IotDevice">
+        <!--@mbg.generated-->
+        <!--@Table iot_device-->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="mac_address" jdbcType="VARCHAR" property="macAddress"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="location" jdbcType="VARCHAR" property="location"/>
+        <result column="role" jdbcType="INTEGER" property="role"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="group_id" jdbcType="INTEGER" property="groupId"/>
+        <result column="create_user_id" jdbcType="INTEGER" property="createUserId"/>
+        <result column="is_disabled" jdbcType="TINYINT" property="isDisabled"/>
+        <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id,
+        mac_address,
+        `name`,
+        `location`,
+        `role`,
+        create_time,
+        update_time,
+        group_id,
+        create_user_id,
+        is_disabled,
+        is_deleted
+    </sql>
+
+    <sql id="Join_Column_List">
+        <!--@mbg.generated-->
+        iot_device.id             as iot_device_id,
+        iot_device.mac_address    as iot_device_mac_address,
+        iot_device.name           as iot_device_name,
+        iot_device.location       as iot_device_location,
+        iot_device.role           as iot_device_role,
+        iot_device.create_time    as iot_device_create_time,
+        iot_device.update_time    as iot_device_update_time,
+        iot_device.group_id       as iot_device_group_id,
+        iot_device.create_user_id as iot_device_create_user_id,
+        iot_device.is_disabled    as iot_device_is_disabled,
+        iot_device.is_deleted     as iot_device_is_deleted
+    </sql>
+
+    <sql id="selectQuery">
+        <where>
+            <if test="query.id != null">
+                <bind name="idlikevalue"
+                      value="'%' + query.id + '%'"/>
+                and id like
+                #{idlikevalue}
+            </if>
+            <if test="query.macAddress != null">
+                <bind name="macAddresslikevalue"
+                      value="'%' + query.macAddress + '%'"/>
+                and mac_address like
+                #{macAddresslikevalue}
+            </if>
+            <if test="query.name != null">
+                <bind name="namelikevalue"
+                      value="'%' + query.name + '%'"/>
+                and name like
+                #{namelikevalue}
+            </if>
+            <if test="query.location != null">
+                <bind name="locationlikevalue"
+                      value="'%' + query.location + '%'"/>
+                and location like
+                #{locationlikevalue}
+            </if>
+            <if test="query.role != null">
+                <bind name="rolelikevalue"
+                      value="'%' + query.role + '%'"/>
+                and role like
+                #{rolelikevalue}
+            </if>
+            <if test="query.createTime != null">
+                <bind name="createTimelikevalue"
+                      value="'%' + query.createTime + '%'"/>
+                and create_time like
+                #{createTimelikevalue}
+            </if>
+            <if test="query.updateTime != null">
+                <bind name="updateTimelikevalue"
+                      value="'%' + query.updateTime + '%'"/>
+                and update_time like
+                #{updateTimelikevalue}
+            </if>
+            <if test="query.groupId != null">
+                <bind name="groupIdlikevalue"
+                      value="'%' + query.groupId + '%'"/>
+                and group_id like
+                #{groupIdlikevalue}
+            </if>
+            <if test="query.createUserId != null">
+                <bind name="createUserIdlikevalue"
+                      value="'%' + query.createUserId + '%'"/>
+                and create_user_id like
+                #{createUserIdlikevalue}
+            </if>
+            <if test="query.isDisabled != null">
+                <bind name="isDisabledlikevalue"
+                      value="'%' + query.isDisabled + '%'"/>
+                and is_disabled like
+                #{isDisabledlikevalue}
+            </if>
+            <if test="query.isDeleted != null">
+                <bind name="isDeletedlikevalue"
+                      value="'%' + query.isDeleted + '%'"/>
+                and is_deleted like
+                #{isDeletedlikevalue}
+            </if>
+    </where>
+
+    </sql>
+
+    <resultMap id="JoinResultMap" type="cn.com.betacat.parkerpal.domain.entity.IotDevice">
+        <!--@mbg.generated-->
+        <id column="iot_device_id" property="id"/>
+        <result column="iot_device_mac_address" property="macAddress"/>
+        <result column="iot_device_name" property="name"/>
+        <result column="iot_device_location" property="location"/>
+        <result column="iot_device_role" property="role"/>
+        <result column="iot_device_create_time" property="createTime"/>
+        <result column="iot_device_update_time" property="updateTime"/>
+        <result column="iot_device_group_id" property="groupId"/>
+        <result column="iot_device_create_user_id" property="createUserId"/>
+        <result column="iot_device_is_disabled" property="isDisabled"/>
+        <result column="iot_device_is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="selectByMacAddressWithSpaces" type="cn.com.betacat.parkerpal.domain.entity.IotDevice"
+               extends="JoinResultMap">
+        <collection property="parkingSpaces" javaType="java.util.List"
+                    resultMap="cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper.JoinResultMap"/>
+    </resultMap>
+
+    <select id="selectByMacAddressWithSpaces" resultMap="selectByMacAddressWithSpaces">
+        <!--@mbg.generated-->
+        select
+        <include refid="Join_Column_List"/>,
+        <include refid="cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper.Join_Column_List"/>
+        from iot_device
+                 join system_parking_space on iot_device.id = system_parking_space.device_id
+        where mac_address = #{macAddress}
+    </select>
+
+    <!--auto generated by MybatisCodeHelper on 2025-01-10-->
+    <select id="selectByIdWithSpaces" resultMap="BaseResultMap">
+        select
+        <include refid="Join_Column_List"/>,
+        <include refid="cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper.Join_Column_List"/>
+        from iot_device
+                 join system_parking_space on iot_device.id = system_parking_space.device_id
+        where iot_device.id = #{id}
+    </select>
+
+    <!--IOT-查询设备列表-->
+    <select id="getAllWithPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from iot_device
+        <include refid="selectQuery" />
+        limit #{query.pageNumber},#{query.pageSize}
+    </select>
+
+    <!--IOT-统计设备数量-->
+    <select id="countTotal" resultType="java.lang.Long">
+        select count(distinct (id))
+        from iot_device
+        <include refid="selectQuery" />
+    </select>
+</mapper>

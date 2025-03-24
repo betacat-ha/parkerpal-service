@@ -4,12 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * @Author: Zoey
- * @Since: 2024-08-15 09:48:30
- * @Description:
- */
-public class DateTimeUtil {
+public final class DateTimeUtil {
 
     // 时间格式化
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

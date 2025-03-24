@@ -1,0 +1,97 @@
+package cn.com.betacat.parkerpal.apicontracts.converter;
+
+import cn.com.betacat.parkerpal.apicontracts.dto.req.MonthlyInsurancePaymentReq;
+import cn.com.betacat.parkerpal.apicontracts.dto.resp.MonthlyInsurancePaymentResp;
+import cn.com.betacat.parkerpal.common.utils.DateTimeUtil;
+import cn.com.betacat.parkerpal.common.utils.MonthlyFeeUtil;
+import cn.com.betacat.parkerpal.domain.base.PageInfoRespQuery;
+import cn.com.betacat.parkerpal.domain.entity.MonthlyInsurancePayment;
+import cn.com.betacat.parkerpal.domain.enums.CarTypeEnum;
+import cn.com.betacat.parkerpal.domain.query.MonthlyInsurancePaymentQuery;
+import java.util.List;
+import org.mapstruct.Builder;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+/**
+ * 月保-缴费记录(MonthlyInsurancePayment) 转换工具类
+ *
+ * @author
+ * @since 2024-08-16 13:23:23
+ */
+@Mapper(builder = @Builder(disableBuilder = true))
+public interface MonthlyInsurancePaymentConverter {
+
+    MonthlyInsurancePaymentConverter INSTANCE = Mappers.getMapper(MonthlyInsurancePaymentConverter.class);
+
+    /**
+     * 月保-缴费记录 数据新增或更新入参转换成 MonthlyInsurancePayment 对象
+     *
+     * @param dto
+     * @return
+     */
+    default MonthlyInsurancePayment toEntity(MonthlyInsurancePaymentReq.CreateOrUpdateDTO dto) {
+        MonthlyInsurancePayment entity = new MonthlyInsurancePayment();
+        // 定义需要缴费金额
+        String paymentAmount = "0";
+        // 判断是否是长期缴费
+        if (null != dto.getLongTerm() && 1 == dto.getLongTerm()) {
+            // 计算长期费用
+            paymentAmount = MonthlyFeeUtil.countLongTerm(dto.getMonthlyFree());
+        } else {
+            // 补全时间
+            entity.setMonthlyStartTime(DateTimeUtil.timeUtils(dto.getMonthlyStartTime(), 1));
+            entity.setMonthlyEndTime(DateTimeUtil.timeUtils(dto.getMonthlyEndTime(), 2));
+            // 计算需要缴纳的月保费用
+            paymentAmount = MonthlyFeeUtil.countFree(dto.getCarTypeCode(), dto.getMonthlyFree(),
+                    entity.getMonthlyStartTime(), entity.getMonthlyEndTime());
+        }
+        entity.setPaymentAmount(paymentAmount);
+        entity.setAccumulatePaymentAmount(paymentAmount);
+        // 未缴费
+        entity.setPaymentStatus(0);
+        entity.setId(dto.getId());
+        entity.setMainlandLicensePlates(dto.getMainlandLicensePlates());
+        entity.setCarTypeCode(dto.getCarTypeCode());
+        entity.setCarTypeName(CarTypeEnum.getName(dto.getCarTypeCode()));
+        entity.setMonthlyFree(dto.getMonthlyFree());
+        entity.setLongTerm(dto.getLongTerm());
+        entity.setParkingLotCode(dto.getParkingLotCode());
+        entity.setPhoneNumber(dto.getPhoneNumber());
+        entity.setUserName(dto.getUserName());
+        entity.setCardId(dto.getCardId());
+        return entity;
+    }
+
+    /**
+     * 月保-缴费记录 查询条件入参转换成 MonthlyInsurancePaymentQuery 对象
+     *
+     * @param queryDTO
+     * @return
+     */
+    MonthlyInsurancePaymentQuery toQuery(MonthlyInsurancePaymentReq.QueryDTO queryDTO);
+
+    /**
+     * 月保-缴费记录 对象响应数据转换
+     *
+     * @param entity
+     * @return
+     */
+    MonthlyInsurancePaymentResp.MonthlyInsurancePaymentDTO toDTO(MonthlyInsurancePayment entity);
+
+    /**
+     * 月保-缴费记录 列表响应数据转换
+     *
+     * @param list
+     * @return
+     */
+    List<MonthlyInsurancePaymentResp.MonthlyInsurancePaymentDTO> toListDTO(List<MonthlyInsurancePayment> list);
+
+    /**
+     * 分页查询 月保-缴费记录 列表响应数据转换
+     *
+     * @param query
+     * @return
+     */
+    MonthlyInsurancePaymentResp.ListDTO toPage(PageInfoRespQuery query);
+}

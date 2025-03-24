@@ -17,52 +17,27 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <wechatpay.version>0.4.9</wechatpay.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>cn.com.betacat.parkerpal</groupId>
-      <artifactId>common</artifactId>
+      <artifactId>domain</artifactId>
     </dependency>
 
     <dependency>
       <groupId>cn.com.betacat.parkerpal</groupId>
-      <artifactId>wxpay</artifactId>
+      <artifactId>api-contracts</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.wechatpay-apiv3</groupId>
+      <artifactId>wechatpay-apache-httpclient</artifactId>
+      <version>${wechatpay.version}</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <mainClass>cn.com.betacat.parkerpal.core.SmartParkingApplication</mainClass>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
 
 </project>
