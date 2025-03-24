@@ -62,6 +62,13 @@ mqtt:
   # QoS
   qos: 1
 
+  # 用于配置传感器的MQTT
+  sensorBroker:
+    ip: 192.168.100.205 # 禁止写本地回环地址
+    port: 1883
+    username: ParkerPal
+    password: 123456
+
 # 终端设备
 iot:
   controlGate: false

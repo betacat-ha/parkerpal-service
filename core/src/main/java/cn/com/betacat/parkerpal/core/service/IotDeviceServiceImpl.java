@@ -25,10 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +42,9 @@ public class IotDeviceServiceImpl extends
 
     @Resource
     private MqttGateway mqttGateway;
+
+    @Resource
+    private Environment environment;
 
     @Autowired
     private SystemParkingSpaceService systemParkingSpaceService;
@@ -201,6 +206,28 @@ public class IotDeviceServiceImpl extends
 
         // 添加操作命令，告诉设备是配置
         deviceConfig.put(IotConstant.JSON_KEY_OPERATION, IotConstant.MESSAGE_OPERATION_CONFIGURATION);
+
+        // 添加MQTT配置
+        // TODO: 临时添加，后续需要处理
+        String mqttIP = environment.getProperty("mqtt.sensorBroker.ip");
+        int mqttPort = environment.getProperty("mqtt.sensorBroker.port", Integer.class);
+        String mqttUsername = environment.getProperty("mqtt.sensorBroker.username");
+        String mqttPassword = environment.getProperty("mqtt.sensorBroker.password");
+
+        // 校验配置
+        if (mqttIP == null || mqttUsername == null || mqttPassword == null || mqttPort == 0) {
+            log.error("MQTT配置错误");
+            sendErrorToSpaceSensor(macAddress, IotConstant.MESSAGE_CODE_ERROR_DEFAULT, "MQTT配置错误");
+            return;
+        }
+
+        // 添加MQTT配置
+        JSONObject mqttConfig = new JSONObject();
+        mqttConfig.put("serverIP", mqttIP);
+        mqttConfig.put("serverPort", mqttPort);
+        mqttConfig.put("serverUser", mqttUsername);
+        mqttConfig.put("serverPassword", mqttPassword);
+        deviceConfig.put("mqtt", mqttConfig);
 
         sendSuccessToSpaceSensor(macAddress, deviceConfig.toJSONString());
     }
