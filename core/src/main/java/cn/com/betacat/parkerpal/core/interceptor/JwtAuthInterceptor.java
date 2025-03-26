@@ -53,6 +53,9 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         // 进行登录验证
         loginInspect(token, verifyPermissions, authority);
 
+        // 存入用户信息
+        request.setAttribute("user", systemUsersService.getEntityByAccountOrId(JwtUtil.getAccount(token)));
+
         return true;
     }
 

@@ -66,4 +66,19 @@ public class SystemParkingDetailReq implements Serializable {
         private List<String> ids;
         //@formatter:on
     }
+
+    @Getter
+    @Setter
+    @ApiModel(value = "SystemParkingDetailReq.QueryDTO", description = "车位-预约DTO")
+    public static class ReserveDTO extends PageInfoReq implements Serializable {
+        private static final long serialVersionUID = 860890907888287960L;
+        //@formatter:off
+        @ApiModelProperty(value = "开始时间,时间格式:yyyy-MM-dd HH:mm:ss", position = 1)
+        private String startTime;
+        @ApiModelProperty(value = "结束时间,时间格式:yyyy-MM-dd HH:mm:ss", position = 2)
+        private String endTime;
+        @ApiModelProperty(value = "租赁车位数量", position = 3)
+        private Integer assignedNumber;
+        //@formatter:on
+    }
 }

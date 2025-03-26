@@ -9,7 +9,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="parent_id" jdbcType="INTEGER" property="parentId" />
-    <result column="is_reserved" jdbcType="INTEGER" property="isReserved" />
+    <result column="is_reserved" jdbcType="TINYINT" property="isReserved" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceReservationRecordMapper">
+    <resultMap id="BaseResultMap" type="cn.com.betacat.parkerpal.domain.entity.SystemParkingSpaceReservationRecord">
+        <!--@mbg.generated-->
+        <!--@Table system_parking_space_reservation_record-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="parking_space_id" jdbcType="INTEGER" property="parkingSpaceId"/>
+        <result column="reservation_start" jdbcType="TIMESTAMP" property="reservationStart"/>
+        <result column="reservation_end" jdbcType="TIMESTAMP" property="reservationEnd"/>
+        <result column="reservation_status" jdbcType="VARCHAR" property="reservationStatus"/>
+        <result column="reservation_user_id" jdbcType="INTEGER" property="reservationUserId"/>
+        <result column="created_at" jdbcType="TIMESTAMP" property="createdAt"/>
+        <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id,
+        parking_space_id,
+        reservation_start,
+        reservation_end,
+        reservation_status,
+        reservation_user_id,
+        created_at,
+        updated_at
+    </sql>
+    <sql id="Join_Column_List">
+        <!--@mbg.generated-->
+        system_parking_space_reservation_record.id                  as system_parking_space_reservation_record_id,
+        system_parking_space_reservation_record.parking_space_id    as
+                                                                       system_parking_space_reservation_record_parking_space_id,
+        system_parking_space_reservation_record.reservation_start   as
+                                                                       system_parking_space_reservation_record_reservation_start,
+        system_parking_space_reservation_record.reservation_end     as system_parking_space_reservation_record_reservation_end,
+        system_parking_space_reservation_record.reservation_status  as
+                                                                       system_parking_space_reservation_record_reservation_status,
+        system_parking_space_reservation_record.reservation_user_id as
+                                                                       system_parking_space_reservation_record_reservation_user_id,
+        system_parking_space_reservation_record.created_at          as system_parking_space_reservation_record_created_at,
+        system_parking_space_reservation_record.updated_at          as system_parking_space_reservation_record_updated_at
+    </sql>
+    <sql id="selectQuery">
+        <where>
+            <if test="query.id != null">
+                <bind name="idlikevalue"
+                      value="'%' + query.id + '%'"/>
+                and id like
+                    #{idlikevalue}
+            </if>
+            <if test="query.parkingSpaceId != null">
+                <bind name="parkingSpaceIdlikevalue"
+                      value="'%' + query.parkingSpaceId + '%'"/>
+                and parking_space_id like
+                    #{parkingSpaceIdlikevalue}
+            </if>
+            <if test="query.reservationStart != null and query.reservationEnd != null">
+                and ((reservation_start >= #{query.reservationStart}) and (reservation_end  &lt;= #{query.reservationEnd}))
+            </if>
+            <if test="query.reservationStatus != null">
+                <bind name="reservationStatuslikevalue"
+                      value="'%' + query.reservationStatus + '%'"/>
+                and reservation_status like
+                    #{reservationStatuslikevalue}
+            </if>
+            <if test="query.reservationUserId != null">
+                <bind name="reservationUserIdlikevalue"
+                      value="'%' + query.reservationUserId + '%'"/>
+                and reservation_user_id like
+                    #{reservationUserIdlikevalue}
+            </if>
+            <!-- <if test="query.createdAt != null"> -->
+            <!--     <bind name="createdAtlikevalue" -->
+            <!--           value="'%' + query.createdAt + '%'"/> -->
+            <!--     and created_at like -->
+            <!--         #{createdAtlikevalue} -->
+            <!-- </if> -->
+            <!-- <if test="query.updatedAt != null"> -->
+            <!--     <bind name="updatedAtlikevalue" -->
+            <!--           value="'%' + query.updatedAt + '%'"/> -->
+            <!--     and updated_at like -->
+            <!--         #{updatedAtlikevalue} -->
+            <!-- </if> -->
+        </where>
+    </sql>
+    <resultMap id="JoinResultMap" type="cn.com.betacat.parkerpal.domain.entity.SystemParkingSpaceReservationRecord">
+        <!--@mbg.generated-->
+        <id column="system_parking_space_reservation_record_id" property="id"/>
+        <result column="system_parking_space_reservation_record_parking_space_id" property="parkingSpaceId"/>
+        <result column="system_parking_space_reservation_record_reservation_start" property="reservationStart"/>
+        <result column="system_parking_space_reservation_record_reservation_end" property="reservationEnd"/>
+        <result column="system_parking_space_reservation_record_reservation_status" property="reservationStatus"/>
+        <result column="system_parking_space_reservation_record_reservation_user_id" property="reservationUserId"/>
+        <result column="system_parking_space_reservation_record_created_at" property="createdAt"/>
+        <result column="system_parking_space_reservation_record_updated_at" property="updatedAt"/>
+    </resultMap>
+    <!--auto generated by MybatisCodeHelper on 2025-03-25-->
+    <select id="selectAllByReservationStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from system_parking_space_reservation_record
+        where reservation_status = #{reservationStatus,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from system_parking_space_reservation_record
+        <include refid="selectQuery"/>
+        limit #{query.pageNumber},#{query.pageSize}
+    </select>
+    <!-- 统计 系统管理-车位预约记录表 总数 -->
+    <select id="countTotal" resultType="java.lang.Long">
+        select count(distinct (id))
+        from system_parking_space_reservation_record
+        <include refid="selectQuery" />
+    </select>
+</mapper>

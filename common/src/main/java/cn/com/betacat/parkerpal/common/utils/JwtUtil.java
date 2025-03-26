@@ -37,6 +37,33 @@ public final class JwtUtil {
     }
 
     /**
+     * 生成签名
+     *
+     * @param account  用户名
+     * @param userId   用户id
+     * @param password 密码
+     * @return 加密的token
+     */
+    public static String sign(String account, String userId, String password) {
+        // 获取当前时间
+        Date currentDate = new Date();
+        // 默认过期时间为 30天
+        long EXPIRE_TIME = 30 * 24 * 60 * 60;
+        // 设置token过期时间,将秒数转换为毫秒并添加到当前时间上
+        Date newDate = new Date(currentDate.getTime() + (EXPIRE_TIME * 1000));
+        Algorithm algorithm = Algorithm.HMAC256(password);
+        String jwtId = IdUtil.fastSimpleUUID();
+        // 附带username信息
+        return JWT.create()
+                .withJWTId(jwtId)
+                .withClaim("account", account)
+                .withClaim("userId", userId)
+                .withExpiresAt(newDate)
+                .withIssuedAt(currentDate)
+                .sign(algorithm);
+    }
+
+    /**
      * 校验token是否正确
      *
      * @param token    token

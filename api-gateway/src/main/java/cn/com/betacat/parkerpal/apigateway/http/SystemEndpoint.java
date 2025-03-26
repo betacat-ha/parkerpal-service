@@ -22,6 +22,7 @@ import cn.com.betacat.parkerpal.apicontracts.dto.resp.SystemRoleResp;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.SystemUsersResp;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.SystemUsersResp.ListDTO;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.SystemWeChatJsapiPayResp;
+import cn.com.betacat.parkerpal.apicontracts.service.SystemParkingSpaceService;
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemCameraDeviceService;
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemChargeRulesService;
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemParkingDetailService;
@@ -31,31 +32,29 @@ import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemUsersService;
 import cn.com.betacat.parkerpal.apicontracts.service.wxpay.WeChatJsapiPayService;
 import cn.com.betacat.parkerpal.common.annotation.PassToken;
 import cn.com.betacat.parkerpal.common.utils.AuthorityType;
+import cn.com.betacat.parkerpal.core.exception.BizException;
 import cn.com.betacat.parkerpal.domain.base.PageInfoRespQuery;
 import cn.com.betacat.parkerpal.domain.base.ResResult;
-import cn.com.betacat.parkerpal.domain.entity.SystemCameraDevice;
-import cn.com.betacat.parkerpal.domain.entity.SystemChargeRules;
-import cn.com.betacat.parkerpal.domain.entity.SystemParking;
-import cn.com.betacat.parkerpal.domain.entity.SystemParkingDetail;
-import cn.com.betacat.parkerpal.domain.entity.SystemRole;
-import cn.com.betacat.parkerpal.domain.entity.SystemUsers;
-import cn.com.betacat.parkerpal.domain.entity.SystemWeChatJsapiPay;
-import cn.com.betacat.parkerpal.domain.query.SystemCameraDeviceQuery;
-import cn.com.betacat.parkerpal.domain.query.SystemParkingDetailQuery;
-import cn.com.betacat.parkerpal.domain.query.SystemRoleQuery;
-import cn.com.betacat.parkerpal.domain.query.SystemUsersQuery;
+import cn.com.betacat.parkerpal.domain.entity.*;
+import cn.com.betacat.parkerpal.domain.enums.RespEnum;
+import cn.com.betacat.parkerpal.domain.query.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 系统管理-用户表(SystemUsers)表控制层
@@ -67,6 +66,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Api(tags = "系统管理")
 @RequestMapping("systemManagement")
 @RestController
+@Slf4j
 public class SystemEndpoint {
 
     @Autowired
@@ -83,6 +83,8 @@ public class SystemEndpoint {
     private SystemParkingDetailService systemParkingDetailService;
     @Autowired
     private WeChatJsapiPayService weChatJsapiPayService;
+    @Autowired
+    private SystemParkingSpaceService systemParkingSpaceService;
 
     @PassToken(required = false)
     @ApiOperation(value = "用户-分页查询列表")
@@ -330,5 +332,44 @@ public class SystemEndpoint {
     public ResResult<String> getAppid() {
         weChatJsapiPayService.getWeChatJsapiPay();
         return ResResult.success(weChatJsapiPayService.getAppId());
+    }
+
+    /**
+     * 预约车位
+     * @param query
+     * @return ResResult
+     */
+    @ApiOperation(value = "车位-新增或修改预约记录")
+    @PostMapping(value = "/reserveParking", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResResult<?> reserveParking(@RequestBody SystemParkingSpaceReservationRecord query, HttpServletRequest request) {
+        // 获取用户信息
+        SystemUsers user = (SystemUsers) request.getAttribute("user");
+
+        SystemParkingSpace result;
+        try {
+            if (query.getId() == null) {
+                result = systemParkingSpaceService.newReservation(query, user);
+            } else {
+                result = systemParkingSpaceService.editReservation(query, user);
+            }
+        } catch (BizException e) {
+            return ResResult.error(RespEnum.FAILURE.getCode(), e.getErrorMsg());
+        } catch (Exception e) {
+            log.error("预约车位时遇到错误：", e);
+            return ResResult.error(RespEnum.FAILURE.getCode(), "预约车位失败，请刷新页面重试");
+        }
+        return ResResult.success(result);
+    }
+
+    /**
+     * 分页查询车位预约信息
+     * @param query 查询条件
+     * @return ResResult
+     */
+    @ApiOperation(value = "车位-分页查询预约记录")
+    @PostMapping(value = "/pageReservation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResResult<?> pageReservation(@RequestBody SystemParkingSpaceReservationRecordQuery query) {
+        PageInfoRespQuery pageInfoRespQuery = systemParkingSpaceService.getPageReservation(query);
+        return ResResult.success(pageInfoRespQuery);
     }
 }
