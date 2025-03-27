@@ -11,6 +11,8 @@ public interface SystemParkingSpaceReservationRecordMapper extends BaseMapper<Sy
 
     List<SystemParkingSpaceReservationRecord> selectByPage(@Param("query") SystemParkingSpaceReservationRecordQuery query);
 
+    List<SystemParkingSpaceReservationRecord> selectWithSpacesByPage(@Param("query") SystemParkingSpaceReservationRecordQuery query);
+
     /**
      * 统计预约总数
      * @param query

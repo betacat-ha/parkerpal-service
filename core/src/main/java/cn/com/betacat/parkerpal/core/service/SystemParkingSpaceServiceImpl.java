@@ -227,10 +227,20 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
      * @return 预约信息列表
      */
     public PageInfoRespQuery getPageReservation(SystemParkingSpaceReservationRecordQuery query) {
+        // 通过车牌号查询用户信息
+        if (query.getLicensePlate() != null) {
+            SystemUsers user = systemUsersMapper.getEntityByAccount(query.getLicensePlate());
+            if (user == null) {
+                query.setLicensePlate(null);
+            } else {
+                query.setReservationUserId(user.getId());
+            }
+        }
+
         PageInfoUtil.pageReq(query);
         // 统计总数
         Long total = reservationRecordMapper.countTotal(query);
-        List<SystemParkingSpaceReservationRecord> list = reservationRecordMapper.selectByPage(query);
+        List<SystemParkingSpaceReservationRecord> list = reservationRecordMapper.selectWithSpacesByPage(query);
         return PageInfoUtil.pageResp(list, query, total);
     }
 

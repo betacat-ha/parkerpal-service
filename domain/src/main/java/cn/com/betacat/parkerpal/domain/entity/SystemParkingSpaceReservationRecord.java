@@ -44,4 +44,7 @@ public class SystemParkingSpaceReservationRecord {
 
     @TableField(exist = false)
     private SystemParkingSpace parkingSpace;
+
+    @TableField(exist = false)
+    private String licensePlate;
 }

@@ -33,6 +33,37 @@
         unit_address
     </sql>
 
+    <sql id="Join_Column_List">
+        <!--@mbg.generated-->
+        system_users.id as system_users_id,
+        system_users.account as system_users_account,
+        system_users.password as system_users_password,
+        system_users.head_sculpture as system_users_head_sculpture,
+        system_users.user_name as system_users_user_name,
+        system_users.create_time as system_users_create_time,
+        system_users.free_time as system_users_free_time,
+        system_users.phone_number as system_users_phone_number,
+        system_users.front_business_license as system_users_front_business_license,
+        system_users.opposite_business_license as system_users_opposite_business_license,
+        system_users.status as system_users_status,
+        system_users.unit_address as system_users_unit_address
+    </sql>
+    <resultMap id="JoinResultMap" type="cn.com.betacat.parkerpal.domain.entity.SystemUsers">
+        <!--@mbg.generated-->
+        <id column="system_users_id" property="id"/>
+        <result column="system_users_account" property="account"/>
+        <result column="system_users_password" property="password"/>
+        <result column="system_users_head_sculpture" property="headSculpture"/>
+        <result column="system_users_user_name" property="userName"/>
+        <result column="system_users_create_time" property="createTime"/>
+        <result column="system_users_free_time" property="freeTime"/>
+        <result column="system_users_phone_number" property="phoneNumber"/>
+        <result column="system_users_front_business_license" property="frontBusinessLicense"/>
+        <result column="system_users_opposite_business_license" property="oppositeBusinessLicense"/>
+        <result column="system_users_status" property="status"/>
+        <result column="system_users_unit_address" property="unitAddress"/>
+    </resultMap>
+
     <!--统计 系统管理-用户表 总数-->
     <select id="countTotal" resultType="java.lang.Long">
         SELECT 

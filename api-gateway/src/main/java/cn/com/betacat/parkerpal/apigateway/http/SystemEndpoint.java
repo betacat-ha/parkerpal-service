@@ -341,7 +341,7 @@ public class SystemEndpoint {
      */
     @ApiOperation(value = "车位-新增或修改预约记录")
     @PostMapping(value = "/reserveParking", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResResult<?> reserveParking(@RequestBody SystemParkingSpaceReservationRecord query, HttpServletRequest request) {
+    public ResResult<SystemParkingSpace> reserveParking(@RequestBody SystemParkingSpaceReservationRecord query, HttpServletRequest request) {
         // 获取用户信息
         SystemUsers user = (SystemUsers) request.getAttribute("user");
 
@@ -368,7 +368,7 @@ public class SystemEndpoint {
      */
     @ApiOperation(value = "车位-分页查询预约记录")
     @PostMapping(value = "/pageReservation", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResResult<?> pageReservation(@RequestBody SystemParkingSpaceReservationRecordQuery query) {
+    public ResResult<PageInfoRespQuery> pageReservation(@RequestBody SystemParkingSpaceReservationRecordQuery query) {
         PageInfoRespQuery pageInfoRespQuery = systemParkingSpaceService.getPageReservation(query);
         return ResResult.success(pageInfoRespQuery);
     }
