@@ -69,10 +69,7 @@
       and parent_id like
       #{parentIdlikevalue}
     </if><if test="query.isReserved != null">
-      <bind name="isReservedlikevalue"
-            value="'%' + query.isReserved + '%'"/>
-      and is_reserved like
-      #{isReservedlikevalue}
+      and is_reserved = #{query.isReserved}
     </if><if test="query.status != null">
       <bind name="statuslikevalue"
             value="'%' + query.status + '%'"/>

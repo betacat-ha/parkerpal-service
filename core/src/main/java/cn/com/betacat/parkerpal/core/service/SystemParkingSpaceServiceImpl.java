@@ -83,7 +83,7 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
     public SystemParkingSpace newReservation(SystemParkingSpaceReservationRecord reservation, SystemUsers user) {
         SystemParkingSpace parkingSpace = checkAvailable(reservation.getParkingSpaceId());
 
-        parkingSpace.setReserved(true);
+        parkingSpace.setIsReserved(true);
         updateBy(parkingSpace);
         LocalDateTime date = LocalDateTime.now();
 
@@ -154,11 +154,11 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
         if (!current.getParkingSpaceId().equals(reservation.getParkingSpaceId())) {
             // 如果车位ID不一致，需要检查新车位是否可用
             SystemParkingSpace newParkingSpace = checkAvailable(reservation.getParkingSpaceId());
-            newParkingSpace.setReserved(true);
+            newParkingSpace.setIsReserved(true);
             updateBy(newParkingSpace);
 
             SystemParkingSpace oldParkingSpace = this.baseMapper.selectById(current.getParkingSpaceId());
-            oldParkingSpace.setReserved(false);
+            oldParkingSpace.setIsReserved(false);
             updateBy(oldParkingSpace);
 
             // 预约结果
@@ -249,7 +249,7 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
             throw new BizException(RespEnum.FAILURE.getCode(), "车位"+ parkingSpace.getName() + "已被占用");
         }
 
-        if (parkingSpace.isReserved()) {
+        if (parkingSpace.getIsReserved()) {
             throw new BizException(RespEnum.FAILURE.getCode(), "车位"+ parkingSpace.getName() + "已被预约");
         }
 
@@ -282,7 +282,7 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
             reservationRecordMapper.updateById(record);
 
             SystemParkingSpace parkingSpace = this.baseMapper.selectById(record.getParkingSpaceId());
-            parkingSpace.setReserved(false);
+            parkingSpace.setIsReserved(false);
             updateBy(parkingSpace);
         }
     }

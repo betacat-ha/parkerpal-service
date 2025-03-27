@@ -54,7 +54,7 @@ public class SystemParkingSpace implements Serializable {
      * 是否预留车位，0|否；1|是
      */
     @TableField(value = "is_reserved")
-    private boolean isReserved;
+    private Boolean isReserved;
 
     /**
      * 车位状态，0|空闲；1|已分配；2|已占用
