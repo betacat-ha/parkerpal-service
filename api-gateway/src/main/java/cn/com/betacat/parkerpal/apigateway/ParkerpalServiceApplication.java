@@ -8,12 +8,14 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Slf4j
 @EnableAspectJAutoProxy
+@EnableScheduling
 @SpringBootApplication
 @MapperScan("cn.com.betacat.parkerpal.apicontracts.mapper")
 @ComponentScan(basePackages = {"cn.com.betacat.parkerpal"})
