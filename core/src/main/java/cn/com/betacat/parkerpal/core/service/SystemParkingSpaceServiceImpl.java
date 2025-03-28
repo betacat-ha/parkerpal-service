@@ -100,9 +100,13 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
             reservation.setReservationStatus(SystemConstant.PARKING_SPACE_RESERVATION_STATUS_RESERVED);
         } else {
             // 如果是管理员，可以用任何ID预约车位，时间可以自定义
-            if (reservation.getReservationStart() == null || reservation.getReservationEnd() == null) {
+            if (reservation.getReservationStart() == null) {
+                reservation.setReservationStart(date);
+            }
+
+            if (reservation.getReservationEnd() == null) {
                 // 默认预留15分钟
-                reservation.setReservationEnd(date.plusMinutes(SystemConstant.PARKING_SPACE_RESERVATION_TIME));
+                reservation.setReservationEnd(reservation.getReservationStart().plusMinutes(SystemConstant.PARKING_SPACE_RESERVATION_TIME));
             }
 
             if (reservation.getReservationEnd().isBefore(reservation.getReservationStart())) {
@@ -111,6 +115,10 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
 
             if (reservation.getReservationStatus() == null || reservation.getReservationStatus().isEmpty()) {
                 reservation.setReservationStatus(SystemConstant.PARKING_SPACE_RESERVATION_STATUS_RESERVED);
+            }
+
+            if (reservation.getReservationUserId() == null || reservation.getReservationUserId().isEmpty()) {
+                reservation.setReservationUserId(user.getId());
             }
         }
 
@@ -270,7 +278,7 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
      *
      */
     @Transactional
-    @Scheduled(cron = "0 0/1 * * * ?")
+    // @Scheduled(cron = "0 0/1 * * * ?")
     public void checkReservation() {
         List<SystemParkingSpaceReservationRecord> records = reservationRecordMapper.selectAllByReservationStatus(SystemConstant.PARKING_SPACE_RESERVATION_STATUS_RESERVED);
 
