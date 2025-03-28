@@ -2,6 +2,7 @@ package cn.com.betacat.parkerpal.core.service;
 
 import cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceMapper;
 import cn.com.betacat.parkerpal.apicontracts.mapper.SystemParkingSpaceReservationRecordMapper;
+import cn.com.betacat.parkerpal.apicontracts.mapper.SystemRoleMapper;
 import cn.com.betacat.parkerpal.apicontracts.mapper.SystemUsersMapper;
 import cn.com.betacat.parkerpal.apicontracts.service.SystemParkingSpaceService;
 import cn.com.betacat.parkerpal.common.constants.SystemConstant;
@@ -39,6 +40,9 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
 
     @Autowired
     private SystemUsersMapper systemUsersMapper;
+
+    @Autowired
+    private SystemRoleMapper roleMapper;
 
     /**
      * 根据查询条件查询所有相关的停车位
@@ -180,27 +184,42 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
 
         // 如果是车主，只能用自己的ID预约车位，时间不能自定义
         if (user.getRoleId().equals(RoleEnum.CZ.getRoleId())) {
-            reservation.setReservationUserId(user.getId());
-            reservation.setReservationStart(date);
+            current.setReservationUserId(user.getId());
+            current.setReservationStart(date);
             // 预留15分钟
-            reservation.setReservationEnd(date.plusMinutes(SystemConstant.PARKING_SPACE_RESERVATION_TIME));
-            reservation.setReservationStatus(SystemConstant.PARKING_SPACE_RESERVATION_STATUS_RESERVED);
+            current.setReservationEnd(date.plusMinutes(SystemConstant.PARKING_SPACE_RESERVATION_TIME));
+            current.setReservationStatus(SystemConstant.PARKING_SPACE_RESERVATION_STATUS_RESERVED);
         } else {
             // 如果是管理员，可以用任何ID预约车位，时间可以自定义
-            if (reservation.getReservationStart() == null || reservation.getReservationEnd() == null) {
-                throw new BizException(RespEnum.FAILURE.getCode(), "预约时间不能为空");
+            if (reservation.getReservationStart() != null) {
+                current.setReservationStart(reservation.getReservationStart());
             }
 
-            if (reservation.getReservationEnd().isBefore(reservation.getReservationStart())) {
+            if (reservation.getReservationEnd() != null) {
+                current.setReservationEnd(reservation.getReservationEnd());
+            }
+
+            if (current.getReservationEnd().isBefore(current.getReservationStart())) {
                 throw new BizException(RespEnum.FAILURE.getCode(), "预约结束时间不能早于开始时间");
             }
 
             if (reservation.getReservationStatus() == null || reservation.getReservationStatus().isEmpty()) {
-                if (reservation.getReservationEnd().isBefore(date)) {
-                    reservation.setReservationStatus(SystemConstant.PARKING_SPACE_RESERVATION_STATUS_EXPIRED);
+                if (current.getReservationEnd().isBefore(date)) {
+                    current.setReservationStatus(SystemConstant.PARKING_SPACE_RESERVATION_STATUS_EXPIRED);
                 } else {
-                    reservation.setReservationStatus(SystemConstant.PARKING_SPACE_RESERVATION_STATUS_RESERVED);
+                    current.setReservationStatus(SystemConstant.PARKING_SPACE_RESERVATION_STATUS_RESERVED);
                 }
+            }
+
+            // 如果是管理员，可以修改预约用户ID
+            if (reservation.getLicensePlate() != null && !reservation.getLicensePlate().isEmpty()) {
+                List<SystemUsers> users = systemUsersMapper.getAllByUserName(reservation.getLicensePlate());
+                if (users == null || users.isEmpty()) {
+                    throw new BizException(RespEnum.FAILURE.getCode(), "车牌不存在");
+                } else if (users.size() != 1) {
+                    throw new BizException(RespEnum.FAILURE.getCode(), "车牌不唯一，请联系管理员");
+                }
+                current.setReservationUserId(users.get(0).getId());
             }
         }
 
@@ -237,11 +256,11 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
     public PageInfoRespQuery getPageReservation(SystemParkingSpaceReservationRecordQuery query) {
         // 通过车牌号查询用户信息
         if (query.getLicensePlate() != null) {
-            SystemUsers user = systemUsersMapper.getEntityByAccount(query.getLicensePlate());
-            if (user == null) {
+            List<SystemUsers> users = systemUsersMapper.getAllByUserName(query.getLicensePlate());
+            if (users == null || users.size() != 1) {
                 query.setLicensePlate(null);
             } else {
-                query.setReservationUserId(user.getId());
+                query.setReservationUserId(users.get(0).getId());
             }
         }
 

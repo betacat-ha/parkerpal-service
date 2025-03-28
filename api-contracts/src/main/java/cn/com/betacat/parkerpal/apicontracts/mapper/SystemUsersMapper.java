@@ -62,4 +62,13 @@ public interface SystemUsersMapper extends BaseMapper<SystemUsers> {
      * @return
      */
     SystemUsers getEntity();
+
+    /**
+     * 根据用户名（车牌）查询用户（仅建议查询车主用户）
+     *
+     * @param userName 用户名
+     * @return 用户信息
+     */
+    List<SystemUsers> getAllByUserName(@Param("userName")String userName);
+
 }
