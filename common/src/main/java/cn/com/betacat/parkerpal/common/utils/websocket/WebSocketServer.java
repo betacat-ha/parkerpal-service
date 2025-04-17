@@ -105,11 +105,11 @@ public class WebSocketServer {
 
             // 校验用户ID是否匹配
             if (!Objects.equals(JwtUtil.getAccount(token), userId)) {
-                log.error("用户ID不匹配，用户：" + userId);
+                log.error("用户ID不匹配，用户：{}", userId);
                 throw new Exception("用户ID不匹配");
             }
 
-            // 鉴权
+            // 权限控制
             WebSocketAuthEvent event = new WebSocketAuthEvent(this, token, AuthorityType.READ);
             eventPublisher.publishEvent(event);
             authPass = event.isAuthorized();
@@ -118,7 +118,7 @@ public class WebSocketServer {
             expireTime = JwtUtil.getExpireTime(token);
 
         } catch (Exception e) {
-            log.error("鉴权失败，用户：" + userId);
+            log.error("鉴权与权限控制失败，用户：{}，原因：{}", userId, e.getMessage());
         }
 
 

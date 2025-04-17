@@ -15,9 +15,8 @@ public final class MonthlyFeeUtil {
      */
     public static String countLongTerm(String free) {
         // 长期按照999年计算
-//        BigDecimal dailyFree = new BigDecimal(free).multiply(BigDecimal.valueOf(12)).multiply(BigDecimal.valueOf(999));
-//        return dailyFree.setScale(2, RoundingMode.HALF_UP).toString();
-        return "0";
+       BigDecimal dailyFree = new BigDecimal(free).multiply(BigDecimal.valueOf(12)).multiply(BigDecimal.valueOf(999));
+       return dailyFree.setScale(2, RoundingMode.HALF_UP).toString();
     }
 
     /**
