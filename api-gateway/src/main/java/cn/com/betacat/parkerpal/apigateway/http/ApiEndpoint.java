@@ -9,6 +9,7 @@ import cn.com.betacat.parkerpal.apicontracts.dto.resp.ParkCollectCouponsResp;
 import cn.com.betacat.parkerpal.apicontracts.service.OrderPaidCatOutboundService;
 import cn.com.betacat.parkerpal.apicontracts.service.ParkCollectCouponsService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.EnterParkingService;
+import cn.com.betacat.parkerpal.apicontracts.service.mixin.ExitParkingService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.OrderService;
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemCameraDeviceService;
 import cn.com.betacat.parkerpal.domain.base.ResResult;
@@ -48,6 +49,9 @@ public class ApiEndpoint {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private ExitParkingService exitParkingService;
 
     @Autowired
     private EnterParkingService enterParkingService;
@@ -121,5 +125,39 @@ public class ApiEndpoint {
     ) {
         // TODO
         return null;
+    }
+
+    @ApiOperation(value = "车辆进场")
+    @PostMapping(value = "/carEnter")
+    public ResResult<?> carEnter(@RequestBody OrderPaidCatOutboundReq.Query1DTO dto) {
+        if (StringUtils.isBlank(dto.getPhoneNumber())) return ResResult.error(RespEnum.INPUT_ERROR_1);
+        if (StringUtils.isBlank(dto.getDeviceIp())) return ResResult.error(RespEnum.INPUT_ERROR_2);
+        if (StringUtils.isBlank(dto.getDevicePort())) return ResResult.error(RespEnum.INPUT_ERROR_3);
+        // 根据设备的IP和端口号，查询该设备信息
+        SystemCameraDevice cameraDevice = systemCameraDeviceService.getEntity(
+                dto.getDeviceIp(),
+                dto.getDevicePort()
+        );
+        // 创建车辆进场记录
+        enterParkingService.createRecordCarEnter(dto.getPhoneNumber(), cameraDevice);
+        // 响应数据转换
+        return ResResult.success();
+    }
+
+    @ApiOperation(value = "车辆出场")
+    @PostMapping(value = "/carOut")
+    public ResResult<?> carOut(@RequestBody OrderPaidCatOutboundReq.Query1DTO dto) {
+        if (StringUtils.isBlank(dto.getPhoneNumber())) return ResResult.error(RespEnum.INPUT_ERROR_1);
+        if (StringUtils.isBlank(dto.getDeviceIp())) return ResResult.error(RespEnum.INPUT_ERROR_2);
+        if (StringUtils.isBlank(dto.getDevicePort())) return ResResult.error(RespEnum.INPUT_ERROR_3);
+        // 根据设备的IP和端口号，查询该设备信息
+        SystemCameraDevice cameraDevice = systemCameraDeviceService.getEntity(
+                dto.getDeviceIp(),
+                dto.getDevicePort()
+        );
+        // 创建车辆出场记录
+        exitParkingService.handleCarExit(cameraDevice, dto.getPhoneNumber());
+        // 响应数据转换
+        return ResResult.success();
     }
 }
