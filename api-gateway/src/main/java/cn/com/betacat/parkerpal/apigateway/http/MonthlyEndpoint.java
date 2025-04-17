@@ -6,10 +6,15 @@ import cn.com.betacat.parkerpal.apicontracts.dto.resp.MonthlyInsurancePaymentRes
 import cn.com.betacat.parkerpal.apicontracts.service.MonthlyInsurancePaymentService;
 import cn.com.betacat.parkerpal.common.annotation.PassToken;
 import cn.com.betacat.parkerpal.common.utils.AuthorityType;
+import cn.com.betacat.parkerpal.common.utils.DateTimeUtil;
+import cn.com.betacat.parkerpal.common.utils.MonthlyFeeUtil;
+import cn.com.betacat.parkerpal.core.exception.BizException;
 import cn.com.betacat.parkerpal.domain.base.PageInfoRespQuery;
 import cn.com.betacat.parkerpal.domain.base.ResResult;
 import cn.com.betacat.parkerpal.domain.entity.MonthlyInsurancePayment;
+import cn.com.betacat.parkerpal.domain.enums.RespEnum;
 import cn.com.betacat.parkerpal.domain.query.MonthlyInsurancePaymentQuery;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,25 +77,24 @@ public class MonthlyEndpoint {
     @PostMapping(value = "/countMoney", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResResult<?> countMoney(@RequestBody MonthlyInsurancePaymentReq.CountMoneyDTO dto) {
         // 判断是否长期有效
-//        if (null != dto.getLongTerm() && 1 == dto.getLongTerm()) {
-//            return ResResult.success(MonthlyUtil.countLongTerm(dto.getMonthlyFree()));
-//        } else {
-//            if (StringUtils.isBlank(dto.getMonthlyStartTime()))
-//                thdtow new BizException(RespEnum.FAILURE.getCode(), "开始时间不能为空");
-//            if (StringUtils.isBlank(dto.getMonthlyEndTime()))
-//                thdtow new BizException(RespEnum.FAILURE.getCode(), "结束时间不能为空");
-//            if (StringUtils.isBlank(dto.getCarTypeCode()))
-//                thdtow new BizException(RespEnum.FAILURE.getCode(), "车辆类型编码不能为空");
-//            if (StringUtils.isBlank(dto.getMonthlyFree()))
-//                thdtow new BizException(RespEnum.FAILURE.getCode(), "月保费用不能为空");
-//            // 响应数据转换
-//            return ResResult.success(MonthlyUtil.countFree(
-//                    dto.getCarTypeCode(),
-//                    dto.getMonthlyFree(),
-//                    DateTimeUtil.timeUtils(dto.getMonthlyStartTime(), 1),
-//                    DateTimeUtil.timeUtils(dto.getMonthlyEndTime(), 2)
-//            ));
-//        }
-        return null; // TODO
+       if (null != dto.getLongTerm() && 1 == dto.getLongTerm()) {
+           return ResResult.success(MonthlyFeeUtil.countLongTerm(dto.getMonthlyFree()));
+       } else {
+           if (StringUtils.isBlank(dto.getMonthlyStartTime()))
+               throw new BizException(RespEnum.FAILURE.getCode(), "开始时间不能为空");
+           if (StringUtils.isBlank(dto.getMonthlyEndTime()))
+               throw new BizException(RespEnum.FAILURE.getCode(), "结束时间不能为空");
+           if (StringUtils.isBlank(dto.getCarTypeCode()))
+               throw new BizException(RespEnum.FAILURE.getCode(), "车辆类型编码不能为空");
+           if (StringUtils.isBlank(dto.getMonthlyFree()))
+               throw new BizException(RespEnum.FAILURE.getCode(), "月保费用不能为空");
+           // 响应数据转换
+           return ResResult.success(MonthlyFeeUtil.countFree(
+                   dto.getCarTypeCode(),
+                   dto.getMonthlyFree(),
+                   DateTimeUtil.timeUtils(dto.getMonthlyStartTime(), 1),
+                   DateTimeUtil.timeUtils(dto.getMonthlyEndTime(), 2)
+           ));
+       }
     }
 }
