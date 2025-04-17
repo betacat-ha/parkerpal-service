@@ -98,6 +98,18 @@ public class SystemEndpoint {
         return ResResult.success(SystemUsersConverter.INSTANCE.toPage(resp));
     }
 
+    @PassToken(required = false)
+    @ApiOperation(value = "车主-分页查询列表")
+    @PostMapping(value = "/pageCustomerList", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResResult<ListDTO> pageCustomerList(@RequestBody SystemUsersReq.QueryDTO dto) {
+        // 请求数据转换
+        SystemUsersQuery query = SystemUsersConverter.INSTANCE.toQuery(dto);
+        // 调用服务
+        PageInfoRespQuery resp = systemUsersService.getCustomerPageList(query);
+        // 响应数据转换
+        return ResResult.success(SystemUsersConverter.INSTANCE.toPage(resp));
+    }
+
     @ApiOperation(value = "用户-更改密码")
     @PassToken(required = false, authority = AuthorityType.CREATE)
     @PostMapping(value = "/updatePassword", consumes = MediaType.APPLICATION_JSON_VALUE)

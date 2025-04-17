@@ -67,6 +67,24 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
     }
 
     /**
+     * 系统管理-车主表-分页查询列表
+     *
+     * @param query
+     * @return
+     */
+    @Override
+    public PageInfoRespQuery getCustomerPageList(SystemUsersQuery query) {
+        // 赋值页码
+        PageInfoUtil.pageReq(query);
+        // 统计总数
+        Long total = this.baseMapper.countTotal(query);
+        // 查询列表
+        List<SystemUsers> list = this.baseMapper.getCustomerPageList(query);
+        // 返回分页数据
+        return PageInfoUtil.pageResp(list, query, total);
+    }
+
+    /**
      * 查询用户信息
      *
      * @param account
@@ -389,7 +407,6 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
 
     /**
      * 更新指定用户缓存
-     *
      * @param user 用户信息
      */
     private void updateCache(SystemUsers user) {

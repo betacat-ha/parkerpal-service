@@ -33,6 +33,14 @@ public interface SystemUsersMapper extends BaseMapper<SystemUsers> {
     List<SystemUsers> getPageList(@Param("query") SystemUsersQuery query);
 
     /**
+     * 分页查询 系统管理-车主表 列表
+     *
+     * @param query
+     * @return
+     */
+    List<SystemUsers> getCustomerPageList(@Param("query") SystemUsersQuery query);
+
+    /**
      * 根据账号查询用户是否存在，且是否唯一
      *
      * @param account

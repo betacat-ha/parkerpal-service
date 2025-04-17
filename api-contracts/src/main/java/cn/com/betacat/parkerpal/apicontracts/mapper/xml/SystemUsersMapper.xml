@@ -109,6 +109,29 @@
         LIMIT #{query.pageNumber},#{query.pageSize}
     </select>
 
+    <!--分页查询 系统管理-车主表 列表-->
+    <select id="getCustomerPageList" resultMap="systemUsersResultMap">
+        SELECT
+        su.id,
+        su.account,
+        su.password,
+        su.head_sculpture,
+        su.user_name,
+        su.create_time,
+        su.free_time,
+        su.phone_number,
+        su.front_business_license,
+        su.opposite_business_license,
+        su.status,
+        su.unit_address,
+        sr.id AS roleId,
+        sr.role_name AS roleName
+        FROM system_users su
+        <include refid="selectQueryCustomer"/>
+        ORDER BY su.create_time DESC
+        LIMIT #{query.pageNumber},#{query.pageSize}
+    </select>
+
     <!--根据账号查询用户是否存在-->
     <select id="accountDoesItExist" resultType="java.lang.Long">
         SELECT
@@ -182,7 +205,20 @@
     <sql id="selectQuery">
         INNER JOIN system_user_role sur ON su.id = sur.user_id
         INNER JOIN system_role sr ON sr.id = sur.role_id
-        WHERE 1 = 1   AND sr.id != 4
+        WHERE 1 = 1   AND sr.id != 4 AND sr.id != 0
+        <if test="query.account != null and query.account != ''">
+            AND su.account LIKE CONCAT('%',#{query.account},'%')
+        </if>
+        <if test="query.userName != null and query.userName != ''">
+            AND su.user_name LIKE CONCAT('%',#{query.userName},'%')
+        </if>
+    </sql>
+
+    <!--系统管理-车主表 的查询条件-->
+    <sql id="selectQueryCustomer">
+        INNER JOIN system_user_role sur ON su.id = sur.user_id
+        INNER JOIN system_role sr ON sr.id = sur.role_id
+        WHERE 1 = 1   AND sr.id != 4 AND sr.id = 0
         <if test="query.account != null and query.account != ''">
             AND su.account LIKE CONCAT('%',#{query.account},'%')
         </if>

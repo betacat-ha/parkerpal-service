@@ -23,6 +23,14 @@ public interface SystemUsersService extends IService<SystemUsers> {
     PageInfoRespQuery getPageList(SystemUsersQuery query);
 
     /**
+     * 系统管理-车主表-分页查询列表
+     *
+     * @param query
+     * @return
+     */
+    PageInfoRespQuery getCustomerPageList(SystemUsersQuery query);
+
+    /**
      * 查询用户信息
      *
      * @param account
