@@ -2,6 +2,8 @@ package cn.com.betacat.parkerpal.core.config;
 
 import cn.com.betacat.parkerpal.core.interceptor.JwtAuthInterceptor;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -19,6 +21,9 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         return new JwtAuthInterceptor();
     }
 
+    @Value("${file.qrCode}")
+    private String qrCodeUrl;
+
     /**
      * 添加拦截器
      *
@@ -29,13 +34,15 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         registry.addInterceptor(this.jwtAuthInterceptor())
                 .addPathPatterns(new String[]{"/**"})
                 .excludePathPatterns(new String[]{
+                        "/qrCode/**",
                         "/swagger-resources/**",
                         "/webjars/**",
                         "/v2/**",
                         "/swagger-ui.html/**",
                         "/doc.html/**",
                         "/favicon.ico/**",
-                        "/spUser/logon"
+                        "/spUser/logon",
+                        // "/error",
                 });
     }
 
@@ -50,6 +57,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler(new String[]{"/webjars/**"}).addResourceLocations(new String[]{"classpath:/META-INF/resources/webjars/"});
         registry.addResourceHandler(new String[]{"swagger-ui.html"}).addResourceLocations(new String[]{"classpath:/META-INF/resources/"});
         registry.addResourceHandler(new String[]{"/swagger/**"}).addResourceLocations(new String[]{"classpath:/static/swagger/"});
+        registry.addResourceHandler(new String[]{"/qrCode/**"}).addResourceLocations(new String[]{"file:" + qrCodeUrl});
     }
 
     /**

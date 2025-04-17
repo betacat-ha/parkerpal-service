@@ -35,7 +35,7 @@ public final class QRCodeUtil {
             String qrName = qrCodeName + ".jpg";
             // 嵌入logo 生成微信支付二维码
             createImg(filePath, thirdParty, content, qrName);
-            return filePath + qrName;
+            return "http://localhost:37902/qrCode/" + qrName;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;

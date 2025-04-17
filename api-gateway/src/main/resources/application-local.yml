@@ -35,7 +35,7 @@ file:
   # log上传地址
   root: /opensource/smartParking/backend/log/
   # 停车领劵二维码生成地址
-  qrCode: /opensource/smartParking/backend/qrcode/
+  qrCode: /Users/betacat/Code/Java/parkerpal-service/static/qrcode/
   # 商户私钥文件上传地址
   privateKeyPath: /opensource/smartParking/backend/wxpay/
 
