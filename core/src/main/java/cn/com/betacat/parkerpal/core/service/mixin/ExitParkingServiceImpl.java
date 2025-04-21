@@ -10,6 +10,9 @@ import cn.com.betacat.parkerpal.domain.entity.RecordCarEnter;
 import cn.com.betacat.parkerpal.domain.entity.RecordsCarOutbound;
 import cn.com.betacat.parkerpal.domain.entity.SystemCameraDevice;
 import java.time.LocalDateTime;
+import java.util.Objects;
+
+import cn.com.betacat.parkerpal.domain.enums.DeviceGroupEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,6 +70,11 @@ public class ExitParkingServiceImpl implements ExitParkingService {
         outboundRecords.setEndTime(nowTime);
         outboundRecords.setMainlandLicensePlates(recordCarEnter.getMainlandLicensePlates());
         outboundRecords.setEndCameraDeviceIp(cameraDevice.getDeviceIp());
+        outboundRecords.setDeviceGroupId(cameraDevice.getGroupId());
+        outboundRecords.setDeviceGroupName(Objects.requireNonNull(DeviceGroupEnum.getById(cameraDevice.getGroupId().toString())).getDeviceGroupName());
+        outboundRecords.setIsToll(recordCarEnter.getIsToll());
+        outboundRecords.setCarGroupId(recordCarEnter.getCarGroupId());
+        outboundRecords.setCarGroupName(recordCarEnter.getCarGroupName());
         outboundRecords.setParkingDuration(
             temporaryService.getParkingDuration(
                 outboundRecords.getStartTime(),
