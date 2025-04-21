@@ -2,26 +2,37 @@ package cn.com.betacat.parkerpal.apigateway.http;
 
 import cn.com.betacat.parkerpal.apicontracts.converter.OrderPaidCatOutboundConverter;
 import cn.com.betacat.parkerpal.apicontracts.converter.ParkCollectCouponsConverter;
+import cn.com.betacat.parkerpal.apicontracts.converter.SystemUsersConverter;
 import cn.com.betacat.parkerpal.apicontracts.dto.req.ApiReq;
 import cn.com.betacat.parkerpal.apicontracts.dto.req.OrderPaidCatOutboundReq;
+import cn.com.betacat.parkerpal.apicontracts.dto.req.SystemUsersReq;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.OrderPaidCatOutboundResp;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.ParkCollectCouponsResp;
+import cn.com.betacat.parkerpal.apicontracts.dto.resp.SystemUsersResp;
 import cn.com.betacat.parkerpal.apicontracts.service.OrderPaidCatOutboundService;
 import cn.com.betacat.parkerpal.apicontracts.service.ParkCollectCouponsService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.EnterParkingService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.ExitParkingService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.OrderService;
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemCameraDeviceService;
+import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemUsersService;
 import cn.com.betacat.parkerpal.domain.base.ResResult;
 import cn.com.betacat.parkerpal.domain.entity.OrderPaidCatOutbound;
 import cn.com.betacat.parkerpal.domain.entity.ParkCollectCoupons;
 import cn.com.betacat.parkerpal.domain.entity.SystemCameraDevice;
+import cn.com.betacat.parkerpal.domain.entity.SystemUsers;
 import cn.com.betacat.parkerpal.domain.enums.RespEnum;
+import cn.com.betacat.parkerpal.domain.query.SystemUsersQuery;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +42,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 @Slf4j
 @RestController
-@Api(tags = "移动端")
+@Api(tags = "对外API接口")
 @RequestMapping("api")
 public class ApiEndpoint {
 
@@ -55,6 +68,9 @@ public class ApiEndpoint {
 
     @Autowired
     private EnterParkingService enterParkingService;
+
+    @Autowired
+    private SystemUsersService systemUsersService;
 
     @ApiOperation(value = "车辆订单查询-出口支付-提前支付")
     @PostMapping(value = "/queryOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -159,5 +175,44 @@ public class ApiEndpoint {
         exitParkingService.handleCarExit(cameraDevice, dto.getPhoneNumber());
         // 响应数据转换
         return ResResult.success();
+    }
+
+    @ApiOperation(value = "注册车主账号")
+    @PostMapping(value = "/registerCustomer")
+    public ResResult<SystemUsersResp.SystemUsersDTO> registerCustomer(@RequestBody SystemUsersReq.CreateOrUpdateDTO dto,  HttpServletRequest request) {
+        dto.setId(null);
+        dto.setRoleId("0");
+        dto.setStatus(1);
+        // 获取用户信息
+        SystemUsers user = (SystemUsers) request.getAttribute("user");
+        if (user == null) {
+            return ResResult.error(RespEnum.FAILURE.getCode(), "用户不存在");
+        }
+        // 生成UUID
+        dto.setAccount(user.getAccount() + "_" + UUID.randomUUID());;
+
+        // 请求数据转换
+        SystemUsers newEntity = SystemUsersConverter.INSTANCE.toEntity(dto);
+        // 用户登录
+        return ResResult.success(SystemUsersConverter.INSTANCE.toDTO(systemUsersService.createOrUpdateUser(newEntity)));
+    }
+
+    @ApiOperation(value = "登录车主账号")
+    @PostMapping(value = "/loginCustomer")
+    public ResResult<SystemUsersResp.SystemUsersDTO> loginCustomer(@RequestBody SystemUsersReq.LoginDTO dto) {
+        // 请求数据转换
+        SystemUsersQuery query = SystemUsersConverter.INSTANCE.toQuery(dto);
+        // 用户登录
+        return ResResult.success(SystemUsersConverter.INSTANCE.toDTO(systemUsersService.login(query)));
+    }
+
+    @ApiOperation(value = "获取室内地图数据")
+    @PostMapping(value = "/getIndoorMapData")
+    public ResResult<?> getIndoorMapData(@RequestBody ApiReq.InnerDoorMap dto) {
+        if (StringUtils.isBlank(dto.getPoi()) || !Objects.equals(dto.getPoi(), "1005"))
+            return ResResult.error(RespEnum.NOT_FOUND_ERROR_PARKING_SPACE);
+
+        // 响应数据转换
+        return ResResult.success("https://cdn.betacat.com.cn/indoorMap/" + dto.getPoi() + ".data");
     }
 }

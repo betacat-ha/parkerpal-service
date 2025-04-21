@@ -42,4 +42,17 @@ public class ApiReq implements Serializable {
         private Long timestamp;
         //@formatter:on
     }
+
+    @Getter
+    @Setter
+    @ApiModel(value = "ApiReq.InnerDoorMap", description = "获取室内地图")
+    public static class InnerDoorMap implements Serializable {
+        private static final long serialVersionUID = -66837852169218985L;
+        //@formatter:off
+        @ApiModelProperty(value = "车场ID", position = 1, required = true)
+        private String poi;
+        @ApiModelProperty(value = "楼层号", position = 2)
+        private String fnum;
+        //@formatter:on
+    }
 }

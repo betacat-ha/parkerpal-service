@@ -21,6 +21,7 @@ public enum RespEnum implements CustomError {
     INPUT_ERROR_2(-7, "请输入出口设备IP"),
     INPUT_ERROR_3(-8, "请输入出口设备IP端口号"),
     NOT_FOUND_ERROR(-9, "尚未注册"),
+    NOT_FOUND_ERROR_PARKING_SPACE(-9, "车场不存在"),
     ROLE_ERROR(-10, "角色错误"),
     USER_ERROR_1(-10, "用户已锁定"),
     USER_ERROR_2(-10, "用户已禁用"),

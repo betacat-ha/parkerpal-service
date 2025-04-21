@@ -7,6 +7,7 @@ import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemUsersService;
 import cn.com.betacat.parkerpal.common.constants.AppConstants;
 import cn.com.betacat.parkerpal.common.constants.CacheManagerConstants;
 import cn.com.betacat.parkerpal.common.utils.JwtUtil;
+import cn.com.betacat.parkerpal.common.utils.RandomPwd;
 import cn.com.betacat.parkerpal.domain.entity.SystemRole;
 import cn.com.betacat.parkerpal.domain.entity.SystemUserRole;
 import cn.com.betacat.parkerpal.domain.entity.SystemUsers;
@@ -237,8 +238,9 @@ public class SystemUsersServiceImpl extends ServiceImpl<SystemUsersMapper, Syste
                 throw new BizException(RespEnum.FAILURE.getCode(), "请输入合适的免费停车时长");
             }
         }
-        // 密码加密
-        user.setPassword(DigestUtils.md5Hex(DigestUtils.md5Hex("123456")));
+        // 生成随机密码
+        String password = RandomPwd.getRandomPwd(20);
+        user.setPassword(DigestUtils.md5Hex(DigestUtils.md5Hex(password)));
         // 默认状态为正常
         if (null == user.getStatus() || user.getStatus() <= 0) user.setStatus(1);
         // 创建用户
