@@ -32,7 +32,7 @@
             <include refid="columns"/>
             ,su.user_name AS userName
             ,CASE
-            WHEN NOW() BETWEEN start_time AND end_time THEN '在租' ELSE '过租'
+            WHEN NOW() BETWEEN start_time AND end_time THEN '有效' ELSE '失效'
             END AS assignedStatus
         FROM system_parking_detail spd
         <include refid="selectQuery"/>

@@ -71,10 +71,7 @@
     </if><if test="query.isReserved != null">
       and is_reserved = #{query.isReserved}
     </if><if test="query.status != null">
-      <bind name="statuslikevalue"
-            value="'%' + query.status + '%'"/>
-      and status like
-      #{statuslikevalue}
+      and status = #{query.status}
     </if><if test="query.createTime != null">
       <bind name="createTimelikevalue"
             value="'%' + query.createTime + '%'"/>
@@ -179,4 +176,20 @@
     from system_parking_space
     <include refid="selectQuery" />
   </select>
+
+  <!--系统管理-统计车位数量-->
+  <select id="countTotal" resultType="java.lang.Long">
+    select count(distinct (id))
+    from system_parking_space
+    <include refid="selectQuery" />
+  </select>
+
+    <!--系统管理-分页查询车位列表-->
+    <select id="selectPage" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List"/>
+      from system_parking_space
+      <include refid="selectQuery" />
+      limit #{query.pageNumber},#{query.pageSize}
+    </select>
 </mapper>

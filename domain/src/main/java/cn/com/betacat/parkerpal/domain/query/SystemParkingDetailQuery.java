@@ -24,6 +24,6 @@ public class SystemParkingDetailQuery extends PageInfoQuery implements Serializa
     private String startTime;        //开始时间
     private String endTime;          //结束时间
     private String userName;         //用户名称
-    private Integer assignedStatus;  //1｜在租；2｜过租
+    private Integer assignedStatus;  //1｜有效；2｜失效
     //@formatter:on
 }

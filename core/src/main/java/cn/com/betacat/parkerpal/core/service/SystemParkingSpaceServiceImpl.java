@@ -15,6 +15,7 @@ import cn.com.betacat.parkerpal.domain.entity.SystemParkingSpaceReservationRecor
 import cn.com.betacat.parkerpal.domain.entity.SystemUsers;
 import cn.com.betacat.parkerpal.domain.enums.RespEnum;
 import cn.com.betacat.parkerpal.domain.enums.RoleEnum;
+import cn.com.betacat.parkerpal.domain.query.SystemParkingSpaceQuery;
 import cn.com.betacat.parkerpal.domain.query.SystemParkingSpaceReservationRecordQuery;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +56,29 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
     }
 
     /**
-     * 根据车位ID查询所有相关的停车位
+     * 根据车位ID查询停车位
      * @param id 车位ID
      * @return 停车位
      */
-    @Cacheable(value = "SystemParkingSpaceById", key = "#id", unless = "#result == null")
+    // @Cacheable(value = "SystemParkingSpaceById", key = "#id", unless = "#result == null")
     public SystemParkingSpace selectBy(String id) {
         return this.baseMapper.selectById(id);
+    }
+
+    /**
+     * 分页查询停车位
+     * @param query 查询条件
+     */
+    @Override
+    public PageInfoRespQuery getPageList(SystemParkingSpaceQuery query) {
+        // 赋值页码
+        PageInfoUtil.pageReq(query);
+        // 统计总数
+        Long total = this.baseMapper.countTotal(query);
+        // 查询列表
+        List<SystemParkingSpace> list = this.baseMapper.selectPage(query);
+        // 返回分页数据
+        return PageInfoUtil.pageResp(list, query, total);
     }
 
     /**
@@ -71,9 +88,53 @@ public class SystemParkingSpaceServiceImpl extends ServiceImpl<SystemParkingSpac
      */
     @Transactional
     public int updateBy(SystemParkingSpace parkingSpace) {
-        int count = this.baseMapper.updateById(parkingSpace);
-        cacheManager.getCache("SystemParkingSpaceById").put(parkingSpace.getId(), parkingSpace);
+        if (parkingSpace == null || parkingSpace.getId() == null) {
+            throw new BizException(RespEnum.FAILURE.getCode(), "车位信息不能为空");
+        }
+
+        SystemParkingSpace current = this.baseMapper.selectById(parkingSpace.getId());
+        if (current == null) {
+            throw new BizException(RespEnum.FAILURE.getCode(), "车位不存在");
+        }
+
+        if (parkingSpace.getName() != null && !parkingSpace.getName().isEmpty()) {
+            current.setName(parkingSpace.getName());
+        }
+        if (parkingSpace.getDeviceId() != null && !parkingSpace.getDeviceId().isEmpty()) {
+            current.setDeviceId(parkingSpace.getDeviceId());
+        }
+        if (parkingSpace.getFnum() != null && !parkingSpace.getFnum().isEmpty()) {
+            current.setFnum(parkingSpace.getFnum());
+        }
+        if(parkingSpace.getModelName() != null && !parkingSpace.getModelName().isEmpty()) {
+            current.setModelName(parkingSpace.getModelName());
+        }
+        if (parkingSpace.getSensorSlot() != null && !parkingSpace.getSensorSlot().isEmpty()) {
+            current.setSensorSlot(parkingSpace.getSensorSlot());
+        }
+        if (parkingSpace.getStatus() != null) {
+            current.setStatus(parkingSpace.getStatus());
+        }
+
+        // 更新日期
+        Date date = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        current.setUpdateTime(date);
+
+        int count = this.baseMapper.updateById(current);
+        // cacheManager.getCache("SystemParkingSpaceById").put(parkingSpace.getId(), parkingSpace);
         return count;
+    }
+
+    /**
+     * 新增车位信息
+     * @param parkingSpace 车位信息
+     */
+    public int insert(SystemParkingSpace parkingSpace) {
+        Date date = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        parkingSpace.setCreateTime(date);
+        parkingSpace.setOccupied(false);
+        parkingSpace.setIsReserved(false);
+        return this.baseMapper.insert(parkingSpace);
     }
 
     /**

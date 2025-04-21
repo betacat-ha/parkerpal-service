@@ -347,6 +347,58 @@ public class SystemEndpoint {
     }
 
     /**
+     * 车位-分页查询列表
+     * @param query 查询条件
+     */
+    @ApiOperation(value = "车位-分页查询列表")
+    @PostMapping(value = "/pageParkingSpaceList", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResResult<PageInfoRespQuery> pageParkingSpaceList(@RequestBody SystemParkingSpaceQuery query) {
+        return ResResult.success(systemParkingSpaceService.getPageList(query));
+    }
+
+    /**
+     * 车位-新增或修改
+     * @param query 查询条件
+     * @return ResResult
+     */
+    @ApiOperation(value = "车位-新增或修改")
+    @PostMapping(value = "/createOrUpdateParkingSpace", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResResult<SystemParkingSpace> createOrUpdateParkingSpace(@RequestBody SystemParkingSpace query) {
+        try {
+            if (query.getId() == null) {
+                systemParkingSpaceService.insert(query);
+            } else {
+                systemParkingSpaceService.updateBy(query);
+            }
+        } catch (BizException e) {
+            return ResResult.error(RespEnum.FAILURE.getCode(), e.getErrorMsg());
+        } catch (Exception e) {
+            log.error("新增或修改车位时遇到错误：", e);
+            return ResResult.error(RespEnum.FAILURE.getCode(), "操作失败，请刷新页面重试");
+        }
+        return ResResult.success(query);
+    }
+
+    /**
+     * 车位-删除
+     * @param ids 车位ID
+     */
+    @ApiOperation(value = "车位-删除")
+    @PassToken(required = false, authority = AuthorityType.DELETE)
+    @PostMapping(value = "/deleteParkingSpace", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResResult<?> deleteParkingSpace(@RequestBody List<String> ids) {
+        try {
+            systemParkingSpaceService.removeBatchByIds(ids);
+        } catch (BizException e) {
+            return ResResult.error(RespEnum.FAILURE.getCode(), e.getErrorMsg());
+        } catch (Exception e) {
+            log.error("删除车位时遇到错误：", e);
+            return ResResult.error(RespEnum.FAILURE.getCode(), "删除失败，请刷新页面重试");
+        }
+        return ResResult.success();
+    }
+
+    /**
      * 预约车位
      * @param query
      * @return ResResult
