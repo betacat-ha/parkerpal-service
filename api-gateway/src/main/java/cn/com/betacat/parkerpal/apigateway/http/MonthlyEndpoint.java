@@ -25,9 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Author: 
- * @Since: 2024-08-16 14:32:11
- * @Description:
+ * @author  
+ * @since 2024-08-16 14:32:11
  */
 
 @Api(tags = "月保")

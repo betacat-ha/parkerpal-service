@@ -3,9 +3,8 @@ package cn.com.betacat.parkerpal.domain.enums;
 import lombok.Getter;
 
 /**
- * @Author: 
- * @Since: 2024-08-16 15:14:40
- * @Description:
+ * @author  
+ * @since 2024-08-16 15:14:40
  */
 @Getter
 public enum CarTypeEnum {

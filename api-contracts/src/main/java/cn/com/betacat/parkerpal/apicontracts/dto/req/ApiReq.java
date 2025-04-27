@@ -8,9 +8,8 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * @Author: 
- * @Since: 2024-08-29 16:14:41
- * @Description:
+ * @author  
+ * @since 2024-08-29 16:14:41
  */
 public class ApiReq implements Serializable {
     private static final long serialVersionUID = 701842395678353080L;

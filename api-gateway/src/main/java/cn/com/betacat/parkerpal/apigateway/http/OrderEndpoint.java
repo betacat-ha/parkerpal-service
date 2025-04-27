@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Author: 
- * @Since: 2024-08-20 14:07:03
- * @Description:
+ * @author  
+ * @since 2024-08-20 14:07:03
  */
 @RestController
 @Api(tags = "订单管理")

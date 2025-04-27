@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * @Author:
- * @Since: 2024-08-15 09:16:17
- * @Description:
+ * 抓拍数据
+ * @author
+ * @since 2024-08-15 09:16:17
  */
 @Getter
 @Setter

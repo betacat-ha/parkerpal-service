@@ -7,9 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 /**
- * @Author:
- * @Since: 2024-09-05 14:09:09
- * @Description:
+ * @author 
+ * @since 2024-09-05 14:09:09
  */
 @Mapper
 public interface VxPayConverter {

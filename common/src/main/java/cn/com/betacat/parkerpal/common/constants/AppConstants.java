@@ -1,8 +1,8 @@
 package cn.com.betacat.parkerpal.common.constants;
 
 /**
- * @Author:
- * @Since: 2024-08-20 13:25:48
+ * @author 
+ * @since 2024-08-20 13:25:48
  * @Description: 自定义常量
  */
 public class AppConstants {

@@ -19,9 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Author:
- * @Since: 2024-09-09 14:44:44
- * @Description:
+ * @author 
+ * @since 2024-09-09 14:44:44
  */
 @RestController
 @Api(tags = "二维码生成")

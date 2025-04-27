@@ -4,8 +4,8 @@ import cn.com.betacat.parkerpal.domain.exception.CustomError;
 import lombok.Getter;
 
 /**
- * @Author:
- * @Since: 2024-06-07 13:02:24
+ * @author 
+ * @since 2024-06-07 13:02:24
  * @Description: 自定义响应信息枚举
  */
 @Getter

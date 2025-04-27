@@ -10,9 +10,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 /**
- * @Author: 
- * @Since: 2024-08-29 09:42:15
- * @Description:
+ * @author  
+ * @since 2024-08-29 09:42:15
  */
 @Mapper(builder = @Builder(disableBuilder = true))
 public interface HomePageConverter {

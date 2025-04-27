@@ -3,10 +3,8 @@ package cn.com.betacat.parkerpal.domain.enums;
 import lombok.Getter;
 
 /**
- * @Author:
- * @Date: 2023/7/13
- * @Time: 上午9:16
- * @Describe: 角色枚举 -- 需要匹配数据库,可自定义
+ * 角色枚举 -- 需要匹配数据库,可自定义
+ * @author
  */
 @Getter
 public enum RoleEnum {

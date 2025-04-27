@@ -36,9 +36,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Author:
- * @Since: 2024-08-14 13:26:32
- * @Description:
+ * @author 
+ * @since 2024-08-14 13:26:32
  */
 @Api(tags = "车辆管理")
 @RestController

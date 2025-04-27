@@ -8,9 +8,8 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * @Author: 
- * @Since: 2024-08-29 09:37:02
- * @Description:
+ * @author  
+ * @since 2024-08-29 09:37:02
  */
 public class HomePageReq implements Serializable {
     private static final long serialVersionUID = -24599605854870981L;

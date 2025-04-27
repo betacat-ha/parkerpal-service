@@ -3,8 +3,8 @@ package cn.com.betacat.parkerpal.domain.entity;
 import lombok.Data;
 
 /**
- * @Author: 
- * @Since: 2024-08-29 13:21:20
+ * @author  
+ * @since 2024-08-29 13:21:20
  * @Description: 车位统计
  */
 @Data

@@ -8,9 +8,8 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * @Author: 
- * @Since: 2024-09-05 14:03:55
- * @Description:
+ * @author  
+ * @since 2024-09-05 14:03:55
  */
 public class WxPayReq implements Serializable {
     private static final long serialVersionUID = -24599605854870981L;

@@ -3,8 +3,8 @@ package cn.com.betacat.parkerpal.domain.enums;
 import lombok.Getter;
 
 /**
- * @Author:
- * @Since: 2024-08-16 09:38:24
+ * @author 
+ * @since 2024-08-16 09:38:24
  * @Description: 车辆所属类型枚举
  */
 @Getter
