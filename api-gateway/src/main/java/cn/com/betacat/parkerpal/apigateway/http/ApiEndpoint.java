@@ -10,6 +10,7 @@ import cn.com.betacat.parkerpal.apicontracts.dto.req.WxPayReq;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.OrderPaidCatOutboundResp;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.ParkCollectCouponsResp;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.SystemUsersResp;
+import cn.com.betacat.parkerpal.apicontracts.service.BaseStationService;
 import cn.com.betacat.parkerpal.apicontracts.service.OrderPaidCatOutboundService;
 import cn.com.betacat.parkerpal.apicontracts.service.ParkCollectCouponsService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.EnterParkingService;
@@ -18,10 +19,7 @@ import cn.com.betacat.parkerpal.apicontracts.service.mixin.OrderService;
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemCameraDeviceService;
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemUsersService;
 import cn.com.betacat.parkerpal.domain.base.ResResult;
-import cn.com.betacat.parkerpal.domain.entity.OrderPaidCatOutbound;
-import cn.com.betacat.parkerpal.domain.entity.ParkCollectCoupons;
-import cn.com.betacat.parkerpal.domain.entity.SystemCameraDevice;
-import cn.com.betacat.parkerpal.domain.entity.SystemUsers;
+import cn.com.betacat.parkerpal.domain.entity.*;
 import cn.com.betacat.parkerpal.domain.enums.OrderStatus;
 import cn.com.betacat.parkerpal.domain.enums.RespEnum;
 import cn.com.betacat.parkerpal.domain.query.SystemUsersQuery;
@@ -29,6 +27,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -71,6 +70,9 @@ public class ApiEndpoint {
 
     @Autowired
     private SystemUsersService systemUsersService;
+
+    @Autowired
+    private BaseStationService baseStationService;
 
     @ApiOperation(value = "车辆订单查询-出口支付-提前支付")
     @PostMapping(value = "/queryOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -233,5 +235,11 @@ public class ApiEndpoint {
         }
         // 响应数据转换
         return ResResult.success();
+    }
+
+    @ApiOperation(value = "查询基站信息")
+    @PostMapping(value = "/baseStation/getAll")
+    public ResResult<List<BaseStation>> getBaseStation(@RequestBody ApiReq.QueryDTO dto) {
+        return ResResult.success(baseStationService.selectAll());
     }
 }
