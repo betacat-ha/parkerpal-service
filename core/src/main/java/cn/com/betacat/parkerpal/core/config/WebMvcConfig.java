@@ -24,6 +24,9 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     @Value("${file.qrCode}")
     private String qrCodeUrl;
 
+    @Value("${file.upload}")
+    private String uploadPath;
+
     /**
      * 添加拦截器
      *
@@ -42,7 +45,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                         "/doc.html/**",
                         "/favicon.ico/**",
                         "/spUser/logon",
-                        // "/error",
+                        "/upload/**",
                 });
     }
 
@@ -58,6 +61,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler(new String[]{"swagger-ui.html"}).addResourceLocations(new String[]{"classpath:/META-INF/resources/"});
         registry.addResourceHandler(new String[]{"/swagger/**"}).addResourceLocations(new String[]{"classpath:/static/swagger/"});
         registry.addResourceHandler(new String[]{"/qrCode/**"}).addResourceLocations(new String[]{"file:" + qrCodeUrl});
+        registry.addResourceHandler(new String[]{"/upload/**"}).addResourceLocations(new String[]{"file:" + uploadPath});
     }
 
     /**

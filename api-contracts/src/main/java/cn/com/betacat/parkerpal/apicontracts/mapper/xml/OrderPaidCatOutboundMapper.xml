@@ -9,7 +9,7 @@
         <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="totalDuration" column="total_duration" jdbcType="VARCHAR"/>
-        <result property="playTime" column="play_time" jdbcType="TIMESTAMP"/>
+        <result property="payTime" column="play_time" jdbcType="TIMESTAMP"/>
         <result property="orderNumber" column="order_number" jdbcType="VARCHAR"/>
         <result property="totalAmount" column="total_amount" jdbcType="VARCHAR"/>
         <result property="totalDiscountAmount" column="total_discount_amount" jdbcType="VARCHAR"/>
@@ -18,7 +18,7 @@
         <result property="totalIncomeAmount" column="total_income_amount" jdbcType="VARCHAR"/>
         <result property="typeCode" column="type_code" jdbcType="VARCHAR"/>
         <result property="typeName" column="type_name" jdbcType="VARCHAR"/>
-        <result property="playStatus" column="play_status" jdbcType="VARCHAR"/>
+        <result property="payStatus" column="play_status" jdbcType="VARCHAR"/>
         <result property="advancePayment" column="advance_payment" jdbcType="INTEGER"/>
     </resultMap>
     

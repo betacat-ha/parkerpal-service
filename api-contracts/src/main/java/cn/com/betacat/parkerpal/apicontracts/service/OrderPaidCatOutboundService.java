@@ -49,4 +49,12 @@ public interface OrderPaidCatOutboundService extends IService<OrderPaidCatOutbou
      * @return
      */
     RevenueStatistics getStatistics(String userId);
+
+    /**
+     * 通过订单号获取订单信息
+     *
+     * @param orderId 车牌号
+     * @return 订单信息
+     */
+    OrderPaidCatOutbound getByOrderId(String orderId);
 }

@@ -29,4 +29,18 @@ public class WxPayReq implements Serializable {
         private String orderNumber;
         //@formatter:on
     }
+
+    // 支付结果回调
+    @Getter
+    @Setter
+    @ApiModel(value = "WxPayReq.PayActionDTO", description = "微信支付结果回调")
+    public static class PayActionDTO implements Serializable {
+        private static final long serialVersionUID = 303840512429333818L;
+        //@formatter:off
+        @ApiModelProperty(value = "订单id", position = 1, required = true)
+        private String parking_id;
+        @ApiModelProperty(value = "支付状态", position = 2, required = true)
+        private String trade_state;
+        //@formatter:on
+    }
 }

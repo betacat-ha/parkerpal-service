@@ -1,11 +1,13 @@
 package cn.com.betacat.parkerpal.core.service.mixin;
 
+import cn.com.betacat.parkerpal.apicontracts.service.OrderPaidCatOutboundService;
 import cn.com.betacat.parkerpal.apicontracts.service.RecordCarEnterService;
 import cn.com.betacat.parkerpal.apicontracts.service.RecordsCarOutboundService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.ExitParkingService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.OrderService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.TemporaryService;
 import cn.com.betacat.parkerpal.core.exception.BizException;
+import cn.com.betacat.parkerpal.domain.entity.OrderPaidCatOutbound;
 import cn.com.betacat.parkerpal.domain.entity.RecordCarEnter;
 import cn.com.betacat.parkerpal.domain.entity.RecordsCarOutbound;
 import cn.com.betacat.parkerpal.domain.entity.SystemCameraDevice;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import cn.com.betacat.parkerpal.domain.enums.DeviceGroupEnum;
+import cn.com.betacat.parkerpal.domain.enums.OrderStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,9 @@ public class ExitParkingServiceImpl implements ExitParkingService {
     @Autowired
     private TemporaryService temporaryService;
 
+    @Autowired
+    private OrderPaidCatOutboundService orderPaidCatOutboundService;
+
     /**
      * 车辆出场业务处理
      */
@@ -48,15 +54,26 @@ public class ExitParkingServiceImpl implements ExitParkingService {
         RecordsCarOutbound outboundRecords = createRecordsCarOut(LocalDateTime.now(), recordCarEnter, cameraDevice);
 
         // 判断是否需要生成支付订单
-        if (outboundRecords.getIsToll() != null && outboundRecords.getIsToll() == 1) {
+        OrderPaidCatOutbound orderPaidCatOutbound = orderPaidCatOutboundService.getEntityByPlates(OrderStatus.SUCCESS.getType(), outboundRecords.getMainlandLicensePlates());
+
+        // 判断是否需要生成支付订单
+        if (outboundRecords.getIsToll() != null && outboundRecords.getIsToll() == 1 && orderPaidCatOutbound == null) {
             // 需要生成支付订单
             orderService.createOrder(outboundRecords);
-        } else {
-            // 不需要生成支付订单，则直接保存出场记录并放行
-            recordsCarOutboundService.save(outboundRecords);
-            recordCarEnterService.updateById(recordCarEnter);
-            openControlGate(cameraDevice.getDeviceIp());
+            throw new BizException("请支付停车费用");
         }
+
+
+        // 判断是否需要支付
+        if (orderPaidCatOutbound != null && !Objects.equals(orderPaidCatOutbound.getPayStatus(), OrderStatus.SUCCESS.getType())) {
+            // 订单未支付，提示用户支付
+            throw new BizException("请支付停车费用");
+        }
+
+        // 不需要支付或已支付，则直接保存出场记录并放行
+        recordsCarOutboundService.save(outboundRecords);
+        recordCarEnterService.updateById(recordCarEnter);
+        openControlGate(cameraDevice.getDeviceIp());
     }
 
     /**

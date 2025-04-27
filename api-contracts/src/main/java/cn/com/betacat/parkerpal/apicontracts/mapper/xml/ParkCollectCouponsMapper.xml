@@ -14,8 +14,8 @@
         <result property="totalIncomeAmount" column="total_income_amount" jdbcType="VARCHAR"/>
         <result property="receiveTime" column="receive_time" jdbcType="TIMESTAMP"/>
         <result property="isItOver" column="is_it_over" jdbcType="INTEGER"/>
-        <result property="isPlay" column="is_play" jdbcType="INTEGER"/>
-        <result property="playTime" column="play_time" jdbcType="TIMESTAMP"/>
+        <result property="isPay" column="is_play" jdbcType="INTEGER"/>
+        <result property="payTime" column="play_time" jdbcType="TIMESTAMP"/>
     </resultMap>
     
     <!--列名-->

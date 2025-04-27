@@ -82,7 +82,7 @@ public class MerchantReconciliationServiceImpl
     @Transactional(rollbackFor = Exception.class)
     public void createOrUpdateEntity(ParkCollectCoupons parkCollectCoupons) {
         // 获取订单支付时间
-        LocalDateTime payTime = parkCollectCoupons.getPlayTime();
+        LocalDateTime payTime = parkCollectCoupons.getPayTime();
         // 转为年月字符串
         String yearMonth = payTime.getYear() + "-" + payTime.getMonthValue();
         // 查询未对账的商家记录

@@ -151,7 +151,7 @@ public class OrderPaidCatOutboundServiceImpl
     private OrderPaidCatOutbound getNoPayOrderByProductId(String userId, String plates) {
         LambdaQueryWrapper<OrderPaidCatOutbound> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(OrderPaidCatOutbound::getUserId, userId);
-        queryWrapper.eq(OrderPaidCatOutbound::getPlayStatus, OrderStatus.NOTPAY.getType());
+        queryWrapper.eq(OrderPaidCatOutbound::getPayStatus, OrderStatus.NOTPAY.getType());
         queryWrapper.eq(OrderPaidCatOutbound::getMainlandLicensePlates, plates);
         return baseMapper.selectOne(queryWrapper);
     }
@@ -167,7 +167,19 @@ public class OrderPaidCatOutboundServiceImpl
         queryWrapper.eq(OrderPaidCatOutbound::getOrderNumber, orderNo);
         OrderPaidCatOutbound orderInfo = baseMapper.selectOne(queryWrapper);
         if (Objects.isNull(orderInfo)) return null;
-        return orderInfo.getPlayStatus();
+        return orderInfo.getPayStatus();
     }
 
+
+    /**
+     * 通过订单号获取订单信息
+     *
+     * @param orderId 车牌号
+     * @return 订单信息
+     */
+    public OrderPaidCatOutbound getByOrderId(String orderId){
+        LambdaQueryWrapper<OrderPaidCatOutbound> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OrderPaidCatOutbound::getOrderNumber, orderId);
+        return baseMapper.selectOne(queryWrapper);
+    }
 }

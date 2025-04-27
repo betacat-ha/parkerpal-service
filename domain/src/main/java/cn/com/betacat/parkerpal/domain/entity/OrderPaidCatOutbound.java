@@ -37,7 +37,7 @@ public class OrderPaidCatOutbound implements Serializable {
     @TableField(value = "total_duration")
     private String totalDuration;         //停车时长
     @TableField(value = "play_time")
-    private LocalDateTime playTime;       //订单支付时间
+    private LocalDateTime payTime;       //订单支付时间
     @TableField(value = "order_number")
     private String orderNumber;           //订单编号
     @TableField(value = "total_amount")
@@ -53,7 +53,7 @@ public class OrderPaidCatOutbound implements Serializable {
     @TableField(value = "type_name")
     private String typeName;              //类型名称
     @TableField(value = "play_status")
-    private String playStatus;            //支付状态
+    private String payStatus;            //支付状态
     @TableField(value = "advance_payment")
     private Integer advancePayment;        //是否提前支付，0｜否；1｜是，默认为0
     @TableField(value = "create_time")

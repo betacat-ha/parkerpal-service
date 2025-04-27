@@ -6,11 +6,16 @@ import com.google.zxing.common.BitMatrix;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import javax.imageio.ImageIO;
 
 
@@ -31,6 +36,8 @@ public final class UploadUtils {
         }
         return image;
     }
+
+
 
     public static byte[] imageToBytes(BufferedImage image) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -99,6 +106,36 @@ public final class UploadUtils {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
+        }
+    }
+
+    public static List<String> saveFilesToLocal(MultipartFile[] files, String filePaths) throws Exception{
+        List<String> fileDTOS = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) {
+                continue;
+            }
+
+            // 生成UUID
+            String uuid = UUID.randomUUID().toString().replace("-", "");
+
+            // 生成文件名
+            String fileName = uuid + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(filePaths, fileName);
+            // 保存文件
+            Files.copy(file.getInputStream(), filePath);
+            // 添加到文件列表
+            fileDTOS.add(filePath.toString());
+        }
+        return fileDTOS;
+    }
+
+    // 存储到本地
+    public static void saveToLocal(String path, String fileName, String formatName, byte[] imageData) throws IOException {
+        try (InputStream inputStream = new ByteArrayInputStream(imageData)) {
+            BufferedImage image = ImageIO.read(inputStream);
+            File outputFile = new File(path, fileName);
+            ImageIO.write(image, formatName, outputFile);
         }
     }
 }

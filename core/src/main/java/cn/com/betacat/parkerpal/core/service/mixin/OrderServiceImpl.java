@@ -110,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
         order.setMainlandLicensePlates(license);
         order.setStartTime(startTime);
         order.setEndTime(endTime);
-        order.setPlayTime(now);
+        order.setPayTime(now);
         order.setOrderNumber(getOrderNo());
 
         // 计算停车时长
@@ -130,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
         order.setDiscount("免费停车" + chargeRulesService.getFreeDuration() + "分钟");
         order.setTypeCode(CarGroupEnum.LIN_BAN.getCarGroupId().toString());
         order.setTypeName(CarGroupEnum.LIN_BAN.getCarGroupName());
-        order.setPlayStatus(OrderStatus.NOTPAY.getType());
+        order.setPayStatus(OrderStatus.NOTPAY.getType());
         order.setAdvancePayment(0); // 默认为0，非提前支付
         order.setCreateTime(now);
 

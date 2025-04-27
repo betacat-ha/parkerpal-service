@@ -43,7 +43,7 @@ public class OrderPaidCatOutboundResp implements Serializable {
         private String totalDuration;         
         @ApiModelProperty(value = "订单支付时间", position = 7)
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-        private LocalDateTime playTime;       
+        private LocalDateTime payTime;
         @ApiModelProperty(value = "订单编号", position = 8)
         private String orderNumber;           
         @ApiModelProperty(value = "总计金额", position = 9)
@@ -59,7 +59,7 @@ public class OrderPaidCatOutboundResp implements Serializable {
         @ApiModelProperty(value = "类型名称", position = 14)
         private String typeName;
         @ApiModelProperty(value = "支付状态", position = 15)
-        private String playStatus;
+        private String payStatus;
         //@formatter:on
     }
 

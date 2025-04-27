@@ -49,9 +49,9 @@ public class ParkCollectCoupons implements Serializable {
     @TableField(value = "is_it_over")
     private Integer isItOver;             //是否已出场,0|未出场；1|已出场
     @TableField(value = "is_play")
-    private Integer isPlay;               //订单是否已支付,0|未支付；1|已支付
+    private Integer isPay;               //订单是否已支付,0|未支付；1|已支付
     @TableField(value = "play_time")
-    private LocalDateTime playTime;       //订单支付成功时间
+    private LocalDateTime payTime;       //订单支付成功时间
 
     @TableField(exist = false)
     private Integer freeTime;             //免费时长，单位:分钟,默认免费停车15分钟

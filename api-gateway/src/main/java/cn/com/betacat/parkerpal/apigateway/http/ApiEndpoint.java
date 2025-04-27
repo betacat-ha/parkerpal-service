@@ -6,6 +6,7 @@ import cn.com.betacat.parkerpal.apicontracts.converter.SystemUsersConverter;
 import cn.com.betacat.parkerpal.apicontracts.dto.req.ApiReq;
 import cn.com.betacat.parkerpal.apicontracts.dto.req.OrderPaidCatOutboundReq;
 import cn.com.betacat.parkerpal.apicontracts.dto.req.SystemUsersReq;
+import cn.com.betacat.parkerpal.apicontracts.dto.req.WxPayReq;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.OrderPaidCatOutboundResp;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.ParkCollectCouponsResp;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.SystemUsersResp;
@@ -21,10 +22,9 @@ import cn.com.betacat.parkerpal.domain.entity.OrderPaidCatOutbound;
 import cn.com.betacat.parkerpal.domain.entity.ParkCollectCoupons;
 import cn.com.betacat.parkerpal.domain.entity.SystemCameraDevice;
 import cn.com.betacat.parkerpal.domain.entity.SystemUsers;
+import cn.com.betacat.parkerpal.domain.enums.OrderStatus;
 import cn.com.betacat.parkerpal.domain.enums.RespEnum;
 import cn.com.betacat.parkerpal.domain.query.SystemUsersQuery;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.time.LocalDateTime;
@@ -214,5 +214,24 @@ public class ApiEndpoint {
 
         // 响应数据转换
         return ResResult.success("https://cdn.betacat.com.cn/indoorMap/" + dto.getPoi() + ".data");
+    }
+
+    @ApiOperation(value = "聚合支付成功回调")
+    @PostMapping(value = "/paySuccess")
+    public ResResult<?> paySuccess(@RequestBody WxPayReq.PayActionDTO dto) {
+        if (StringUtils.isBlank(dto.getParking_id())) return ResResult.error(RespEnum.FAILURE);
+        if (StringUtils.isBlank(dto.getTrade_state())) return ResResult.error(RespEnum.FAILURE);
+        // 根据订单号查询订单
+        OrderPaidCatOutbound order = orderPaidCatOutboundService.getByOrderId(dto.getParking_id());
+        if (order == null) return ResResult.error(RespEnum.FAILURE);
+        // 判断支付状态
+        if (dto.getTrade_state().equals("SUCCESS")) {
+            // 支付成功
+            order.setPayStatus(OrderStatus.SUCCESS.getType());
+            order.setPayTime(LocalDateTime.now());
+            orderPaidCatOutboundService.updateById(order);
+        }
+        // 响应数据转换
+        return ResResult.success();
     }
 }
