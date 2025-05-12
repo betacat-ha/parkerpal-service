@@ -11,6 +11,7 @@ import cn.com.betacat.parkerpal.apicontracts.dto.resp.OrderPaidCatOutboundResp;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.ParkCollectCouponsResp;
 import cn.com.betacat.parkerpal.apicontracts.dto.resp.SystemUsersResp;
 import cn.com.betacat.parkerpal.apicontracts.service.BaseStationService;
+import cn.com.betacat.parkerpal.apicontracts.service.LocationService;
 import cn.com.betacat.parkerpal.apicontracts.service.OrderPaidCatOutboundService;
 import cn.com.betacat.parkerpal.apicontracts.service.ParkCollectCouponsService;
 import cn.com.betacat.parkerpal.apicontracts.service.mixin.EnterParkingService;
@@ -36,10 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -73,6 +71,9 @@ public class ApiEndpoint {
 
     @Autowired
     private BaseStationService baseStationService;
+
+    @Autowired
+    private LocationService locationService;
 
     @ApiOperation(value = "车辆订单查询-出口支付-提前支付")
     @PostMapping(value = "/queryOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -241,5 +242,14 @@ public class ApiEndpoint {
     @PostMapping(value = "/baseStation/getAll")
     public ResResult<List<BaseStation>> getBaseStation(@RequestBody ApiReq.QueryDTO dto) {
         return ResResult.success(baseStationService.selectAll());
+    }
+
+    @ApiOperation(value = "查询rssi信息")
+    @GetMapping(value = "/baseStation/getRssi/{macAddress}")
+    public ResResult<SignalSource> getRssi(@PathVariable String macAddress) {
+        if (StringUtils.isBlank(macAddress)) {
+            return ResResult.error(RespEnum.INPUT_ERROR_1);
+        }
+        return ResResult.success(locationService.getRssiFromCache(macAddress));
     }
 }

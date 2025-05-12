@@ -2,6 +2,7 @@ package cn.com.betacat.parkerpal.core.service;
 
 import cn.com.betacat.parkerpal.apicontracts.mapper.IotDeviceMapper;
 import cn.com.betacat.parkerpal.apicontracts.service.IotDeviceService;
+import cn.com.betacat.parkerpal.apicontracts.service.LocationService;
 import cn.com.betacat.parkerpal.apicontracts.service.SystemParkingSpaceService;
 import cn.com.betacat.parkerpal.common.constants.IotConstant;
 import cn.com.betacat.parkerpal.common.constants.RedisMessageConstant;
@@ -31,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +50,9 @@ public class IotDeviceServiceImpl extends
 
     @Autowired
     private SystemParkingSpaceService systemParkingSpaceService;
+
+    @Autowired
+    private LocationService locationService;
 
     @Value("${mqtt.topic.subscribe}")
     private String subscribedTopic;
@@ -202,7 +207,24 @@ public class IotDeviceServiceImpl extends
             return;
         }
 
-        JSONObject deviceConfig = (JSONObject) JSONObject.toJSON(iotDevice);
+        JSONObject deviceConfig = new JSONObject();
+        deviceConfig.put("name", iotDevice.getName());
+        deviceConfig.put("role", iotDevice.getRole());
+        deviceConfig.put("loc", iotDevice.getLocation());
+
+        // 添加车位信息
+        List<SystemParkingSpace> parkingSpaces = iotDevice.getParkingSpaces();
+        ArrayList <JSONObject> parkingSpaceList = new ArrayList<>();
+        if (parkingSpaces != null && !parkingSpaces.isEmpty()) {
+            for (SystemParkingSpace space : parkingSpaces) {
+                JSONObject spaceConfig = new JSONObject();
+                spaceConfig.put("id", space.getId());
+                spaceConfig.put("name", space.getName());
+                spaceConfig.put("slot", space.getSensorSlot());
+                parkingSpaceList.add(spaceConfig);
+            }
+        }
+        deviceConfig.put("ps", parkingSpaceList);
 
         // 添加操作命令，告诉设备是配置
         deviceConfig.put(IotConstant.JSON_KEY_OPERATION, IotConstant.MESSAGE_OPERATION_CONFIGURATION);
@@ -223,11 +245,11 @@ public class IotDeviceServiceImpl extends
 
         // 添加MQTT配置
         JSONObject mqttConfig = new JSONObject();
-        mqttConfig.put("serverIP", mqttIP);
-        mqttConfig.put("serverPort", mqttPort);
-        mqttConfig.put("serverUser", mqttUsername);
-        mqttConfig.put("serverPassword", mqttPassword);
-        deviceConfig.put("mqtt", mqttConfig);
+        mqttConfig.put("ip", mqttIP);
+        mqttConfig.put("port", mqttPort);
+        mqttConfig.put("usr", mqttUsername);
+        mqttConfig.put("pwd", mqttPassword);
+        deviceConfig.put("mq", mqttConfig);
 
         sendSuccessToSpaceSensor(macAddress, deviceConfig.toJSONString());
     }
@@ -414,6 +436,7 @@ public class IotDeviceServiceImpl extends
 
     public void handleMessage(String topic, String payload) {
         String deviceId = null;
+        String deviceMacAddress = null;
         JSONObject jsonObject = null;
 
         // 解析负载
@@ -429,6 +452,8 @@ public class IotDeviceServiceImpl extends
             if (!deviceId.startsWith(sensorPubPrefix)) {
                 return;
             }
+
+            deviceMacAddress = deviceId.substring(sensorPubPrefix.length());
 
             log.info("获取设备编码为：" + deviceId + "，负载为：" + payload);
             // 处理接收到的消息
@@ -471,6 +496,14 @@ public class IotDeviceServiceImpl extends
                 case IotConstant.MESSAGE_TYPE_CONFIGURATION_COMPLETE -> {
                     // 处理设备的配置回复
 
+                }
+                case IotConstant.MESSAGE_TYPE_SNIFFER_INFO -> {
+                    RssiRecord rssiRecord = new RssiRecord();
+                    rssiRecord.setSensorMacAddress(deviceMacAddress);
+                    rssiRecord.setSourceMacAddress(jsonObject.getString(IotConstant.JSON_KEY_MAC));
+                    rssiRecord.setRssi(jsonObject.getInteger(IotConstant.JSON_KEY_RSSI));
+
+                    locationService.setRssiToCache(rssiRecord);
                 }
                 default -> log.warn("未知消息类型：" + jsonObject.getString(IotConstant.JSON_KEY_TYPE));
             }
