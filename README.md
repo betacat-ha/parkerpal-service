@@ -1,4 +1,17 @@
 
+<div align="center">
+  <img width="100px" alt="logo" style="width: 100px;
+        height: 100px; border-radius: 15px; margin: 5;" src="./static/logo.png"/>
+  <p style="font-size: 24px; font-weight: bold;">智泊无忧服务端</p>
+</div>
+<div align="center">
+<img alt="Java Version badge" src="https://img.shields.io/badge/Java-17-orange">
+<img alt="Java Version badge" src="https://img.shields.io/badge/Spring_Boot-2.7.13-darkgreen">
+<img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/betacat-ha/parkerpal-service">
+<img alt="GitHub contributors" src="https://img.shields.io/github/contributors/betacat-ha/parkerpal-service">
+<img alt="GitHub License Badge" src="https://img.shields.io/github/license/betacat-ha/parkerpal-service">
+</div>
+
 # 项目概述
 
 智泊无忧项目前后端分离架构，前端使用Vue3.0 + TypeScript + Element-Plus搭建，后端使用技术栈如下：
@@ -10,7 +23,6 @@
 | Knife4j      | 3.0.3       | 接口文档                               |
 | MyBatis-Plus | 3.5.2       | 半ORM，简化CRUD操作                      |
 | MapStruct    | 1.5.5.Final | 代码生成器，用于简化不同对象模型之间的映射转换。 |
-
 
 **多模块划分**
 
@@ -61,25 +73,4 @@ dt.sh 脚本命令说明：
 建议使用：./dt.sh restart 
 
 命令查看运行日志命令：在jar包所在的目录中，输入：tail -f nohup.out
-
-## 版本说明
-
-![输入图片说明](%E5%8A%9F%E8%83%BD%E6%B8%85%E5%8D%95.png)
-
-## 在线演示
-
-https://smartparking.xlbzone.com/#/login
-
-【后台管理登录账号】
-
-登录账号：admin
-
-密码：123456
-
-【商家登录账号】
-
-登录账号：hotel
-
-密码：123456
-
 
