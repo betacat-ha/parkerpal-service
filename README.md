@@ -1,7 +1,6 @@
-
-<div align="center">
+<div align="center" style="overflow：hidden">
   <img width="100px" alt="logo" style="width: 100px;
-        height: 100px; border-radius: 15px; margin: 5;" src="./logo.png"/>
+        height: 100px; border-radius: 15px; margin: 5;" src="./img/logo-round.png"/>
   <p style="font-size: 24px; font-weight: bold;">智泊无忧服务端</p>
 </div>
 <div align="center">
@@ -11,6 +10,7 @@
 <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/betacat-ha/parkerpal-service">
 <img alt="GitHub License Badge" src="https://img.shields.io/github/license/betacat-ha/parkerpal-service">
 </div>
+
 
 # 项目概述
 
