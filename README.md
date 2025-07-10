@@ -1,7 +1,7 @@
 
 <div align="center">
   <img width="100px" alt="logo" style="width: 100px;
-        height: 100px; border-radius: 15px; margin: 5;" src="./static/logo.png"/>
+        height: 100px; border-radius: 15px; margin: 5;" src="./logo.png"/>
   <p style="font-size: 24px; font-weight: bold;">智泊无忧服务端</p>
 </div>
 <div align="center">
