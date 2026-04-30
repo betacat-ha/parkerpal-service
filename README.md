@@ -14,7 +14,18 @@
 
 # 项目概述
 
-智泊无忧项目前后端分离架构，前端使用Vue3.0 + TypeScript + Element-Plus搭建，后端使用技术栈如下：
+智泊无忧项目前后端分离架构，前端使用Vue3.0 + TypeScript + Element-Plus搭建。后端使用Spring Boot框架，采用多模块划分，核心模块负责业务逻辑实现，算法包装模块通过FFI调用底层语言实现的算法，API规约模块定义对外暴露的服务接口规约，API网关模块作为对外API请求的入口点。项目还集成了MySQL数据库、Knife4j接口文档、MyBatis-Plus简化CRUD操作以及MapStruct代码生成器用于对象模型之间的映射转换。
+
+## 项目链接
+
+| 项目名           | 项目地址                                        |
+| ---------------- | ----------------------------------------------- |
+| 智泊无忧服务端   | https://github.com/betacat-ha/parkerpal-service |
+| 智泊无忧Web端    | https://github.com/betacat-ha/parkerpal-web     |
+| 智泊无忧小程序端 | https://github.com/betacat-ha/ParkerPal-uni-app |
+| 智泊无忧传感器   | https://github.com/betacat-ha/ParkerPal-Sensor  |
+
+## 服务端技术栈
 
 | 技术名称       | 版本          | 用途描述                               |
 |--------------|-------------|------------------------------------|
