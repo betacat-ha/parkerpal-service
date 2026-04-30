@@ -20,7 +20,7 @@ import cn.com.betacat.parkerpal.domain.enums.RoleEnum;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -67,7 +67,7 @@ public class ParkCollectCouponsServiceImpl
         SystemUsers users = systemUsersService.getEntityByAccountOrId(userId);
         if (null != timestamp && timestamp > 0) {
             LocalDateTime now = LocalDateTime.now();
-            long timestamp1 = now.toInstant(ZoneOffset.UTC).toEpochMilli();
+            long timestamp1 = now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             // 判断时间戳是否有值
             if (timestamp < timestamp1) throw new BizException(RespEnum.OVERDUE_ERROR);
         }

@@ -10,8 +10,10 @@ import cn.com.betacat.parkerpal.apicontracts.service.MerchantReconciliationServi
 import cn.com.betacat.parkerpal.apicontracts.service.ParkCollectCouponsService;
 import cn.com.betacat.parkerpal.common.annotation.PassToken;
 import cn.com.betacat.parkerpal.common.constants.AppConstants;
+import cn.com.betacat.parkerpal.common.constants.RedisMessageConstant;
 import cn.com.betacat.parkerpal.common.utils.AuthorityType;
 import cn.com.betacat.parkerpal.common.utils.QRCodeUtil;
+import cn.com.betacat.parkerpal.common.utils.RedisUtil;
 import cn.com.betacat.parkerpal.domain.base.PageInfoRespQuery;
 import cn.com.betacat.parkerpal.domain.base.ResResult;
 import cn.com.betacat.parkerpal.domain.enums.RespEnum;
@@ -21,7 +23,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -45,7 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MerchantEndpoint {
 
     @Value("${file.qrCode}")
-    private String qrCodeUrl;
+    private String qrCodeFilePath;
 
     @Value("${file.thirdParty}")
     private Boolean thirdParty;
@@ -95,7 +100,7 @@ public class MerchantEndpoint {
     @ApiOperation(value = "扫码领劵")
     @GetMapping(value = "/generateQRCode")
     @PassToken(required = false, verifyPermissions = false)
-    public ResResult<String> generateQRCode(
+    public ResResult<MerchantReconciliationResp.QRCodeRespDTO> generateQRCode(
             @ApiParam(value = "商户ID", required = true) @RequestParam String userId,
             @ApiParam(value = "跳转地址，地址结尾不需要拼接/", required = true) @RequestParam String url) {
         if (userId == null || userId.isEmpty())
@@ -104,14 +109,29 @@ public class MerchantEndpoint {
             return ResResult.error(RespEnum.FAILURE.getCode(), "请输入跳转地址");
         // 移除 url 的最后一个字符
         if (url.endsWith("/")) url = url.substring(0, url.length() - 1);
-        // 获取当前时间并加上 30 分钟
-        LocalDateTime thirtyMinutesLater = LocalDateTime.now().plusMinutes(AppConstants.QR_TIME);
-        // 将 LocalDateTime 转换为 Unix 时间戳
-        long timestamp = thirtyMinutesLater.toInstant(ZoneOffset.UTC).toEpochMilli();
-        // 二维码地址内容
-        String content = url + "?userId=" + userId + "&timestamp=" + timestamp;
+        // 获取当前 UTC 时间并加上 30 分钟
+        long timestamp = ZonedDateTime.now(ZoneOffset.UTC)
+                .plusMinutes(AppConstants.QR_TIME)
+                .toInstant()
+                .toEpochMilli();
+        // 生成随机token
+        String token = UUID.randomUUID().toString().replace("-", "");
+        // 生成唯一文件名
+        String uniqueFileName = userId + "_" + timestamp + "_" + token.substring(0, 8);
+        // 将token存入Redis，设置过期时间为30分钟（1800秒）
+        RedisUtil.set(RedisMessageConstant.QR_CODE_TOKEN + token, userId, AppConstants.QR_TIME * 60, TimeUnit.SECONDS);
+        // 二维码地址内容：随机URL + token
+        String content = url + "?token=" + token + "&timestamp=" + timestamp;
+        // 生成二维码图片，返回图片URL
+        String qrCodeUrl = QRCodeUtil.generateQRCode(userId, qrCodeFilePath, thirdParty, content);
+        
+        // 构建响应对象，包含二维码URL、token和过期时间
+        MerchantReconciliationResp.QRCodeRespDTO respDTO = new MerchantReconciliationResp.QRCodeRespDTO();
+        respDTO.setQrCodeUrl(qrCodeUrl);
+        respDTO.setToken(token);
+        respDTO.setExpireTime(timestamp);
+        
         // 响应数据转换
-        return ResResult.success(
-            QRCodeUtil.generateQRCode(userId, qrCodeUrl, thirdParty, content));
+        return ResResult.success(respDTO);
     }
 }

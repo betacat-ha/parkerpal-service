@@ -54,4 +54,19 @@ public class MerchantReconciliationResp implements Serializable {
         @ApiModelProperty(value = "数据列表", position = 4)
         private List<MerchantReconciliationDTO> list;
     }
+
+    @Getter
+    @Setter
+    @ApiModel(value = "MerchantReconciliationResp.QRCodeRespDTO", description = "二维码生成响应DTO")
+    public static class QRCodeRespDTO implements Serializable {
+        private static final long serialVersionUID = -12345678901234567L;
+        //@formatter:off
+        @ApiModelProperty(value = "二维码图片URL", position = 1)
+        private String qrCodeUrl;
+        @ApiModelProperty(value = "访问令牌", position = 2)
+        private String token;
+        @ApiModelProperty(value = "过期时间戳(毫秒)", position = 3)
+        private Long expireTime;
+        //@formatter:on
+    }
 }

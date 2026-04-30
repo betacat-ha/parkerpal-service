@@ -2,8 +2,10 @@ package cn.com.betacat.parkerpal.apigateway.http;
 
 import cn.com.betacat.parkerpal.apicontracts.service.sys.SystemCameraDeviceService;
 import cn.com.betacat.parkerpal.common.annotation.PassToken;
+import cn.com.betacat.parkerpal.common.constants.RedisMessageConstant;
 import cn.com.betacat.parkerpal.common.utils.AuthorityType;
 import cn.com.betacat.parkerpal.common.utils.QRCodeUtil;
+import cn.com.betacat.parkerpal.common.utils.RedisUtil;
 import cn.com.betacat.parkerpal.domain.base.ResResult;
 import cn.com.betacat.parkerpal.domain.entity.SystemCameraDevice;
 import cn.com.betacat.parkerpal.domain.enums.RespEnum;
@@ -96,5 +98,25 @@ public class QrCodeEndpoint {
         // 移除 url 的最后一个字符
         if (url.endsWith(type)) url = url.substring(0, url.length() - 1);
         return url;
+    }
+
+    @GetMapping(value = "/validateToken")
+    @ApiOperation(value = "验证二维码token有效性")
+    @PassToken(required = false, authority = AuthorityType.READ)
+    public ResResult<String> validateToken(
+            @ApiParam(value = "二维码token", required = true) @RequestParam String token) {
+        if (token == null || token.isEmpty()) {
+            return ResResult.error(RespEnum.FAILURE.getCode(), "token不能为空");
+        }
+        // 从Redis中获取userId
+        Object userIdObj = RedisUtil.get(RedisMessageConstant.QR_CODE_TOKEN + token);
+        if (userIdObj == null) {
+            return ResResult.error(RespEnum.FAILURE.getCode(), "二维码已过期或无效");
+        }
+
+        String userId = (String) userIdObj;
+        // 验证成功后删除token（一次性使用）
+         RedisUtil.delete(RedisMessageConstant.QR_CODE_TOKEN + token);
+        return ResResult.success(userId);
     }
 }

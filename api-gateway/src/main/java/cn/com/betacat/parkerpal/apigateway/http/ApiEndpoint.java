@@ -27,7 +27,7 @@ import cn.com.betacat.parkerpal.domain.query.SystemUsersQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -95,7 +95,7 @@ public class ApiEndpoint {
     public ResResult<ParkCollectCouponsResp.ParkCollectDTO> assignedNumber(@RequestBody ApiReq.QueryDTO dto
     ) {
         LocalDateTime now = LocalDateTime.now();
-        long timestamp = now.toInstant(ZoneOffset.UTC).toEpochMilli();
+        long timestamp = now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         if (dto.getTimestamp() != null && dto.getTimestamp() > 0 && dto.getTimestamp() < timestamp) {
             // 调用服务
             Map<String, Object> params = parkCollectCouponsService.assignedNumber(dto.getUserId());

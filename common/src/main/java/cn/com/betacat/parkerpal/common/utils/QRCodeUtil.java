@@ -7,8 +7,11 @@ import com.google.zxing.common.BitMatrix;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import javax.imageio.ImageIO;
 
 
@@ -20,6 +23,9 @@ public final class QRCodeUtil {
 
     // 二维码尺寸
     private static final int QRCODE_SIZE = 400;
+
+    // 日期时间格式化器
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     /**
      * 生成二维码
@@ -40,6 +46,18 @@ public final class QRCodeUtil {
             System.out.println(e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * 生成唯一且与用户关联的二维码文件名
+     *
+     * @param userId 用户ID
+     * @return 唯一的文件名（不含扩展名）
+     */
+    public static String generateUniqueFileName(String userId) {
+        String timestamp = LocalDateTime.now().format(FORMATTER);
+        String randomSuffix = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        return userId + "_" + timestamp + "_" + randomSuffix;
     }
 
     /**
